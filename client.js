@@ -61,6 +61,9 @@ window.__ModuleLoader__.load({
 			aiBadge: "AI 速读",
 			verify: "请核对原文",
 			viewOriginal: "查看原文 ↗",
+			continueChat: "继续对话",
+			chatCopied: "文章信息已复制，去对话里粘贴即可继续。",
+			chatUnavailable: "当前 Harness 组合没有可用的对话服务，无法打开新对话。",
 			showDetails: "展开细节",
 			hideDetails: "收起细节",
 			detailsTitle: "关键信息",
@@ -159,6 +162,9 @@ window.__ModuleLoader__.load({
 			aiBadge: "AI read",
 			verify: "verify the source",
 			viewOriginal: "Open source ↗",
+			continueChat: "Discuss with AI",
+			chatCopied: "Article details copied — paste them into a conversation to continue.",
+			chatUnavailable: "This Harness composition has no conversation service to open a new chat.",
 			showDetails: "Show details",
 			hideDetails: "Hide details",
 			detailsTitle: "Key facts",
@@ -386,6 +392,17 @@ window.__ModuleLoader__.load({
 			);
 		}
 
+		function IconMessage({ size }) {
+			const s = size || 14;
+			return h(
+				"svg",
+				iconProps(s),
+				h("path", { d: "M13.5 8.4c0 2.7-2.5 4.9-5.5 4.9-.7 0-1.4-.1-2-.3l-3 1.1 1.1-2.7c-.7-.8-1.1-1.9-1.1-3 0-2.7 2.5-4.9 5.5-4.9s5 2.2 5 4.9Z" }),
+				h("path", { d: "M5.8 8.2h4.4" }),
+				h("path", { d: "M5.8 10.2h2.8" }),
+			);
+		}
+
 		function IconChevron({ direction }) {
 			const path = direction === "left" ? "M10 3.5 5.5 8l4.5 4.5" : "M6 3.5 10.5 8 6 12.5";
 			return h("svg", iconProps(14), h("path", { d: path }));
@@ -470,7 +487,11 @@ window.__ModuleLoader__.load({
 			".sf-evidence{margin:10px 0 0;font-size:13px;line-height:21px;color:var(--dsw-alias-label-secondary)}",
 			".sf-cardFoot{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:15px;padding-top:11px;border-top:.5px solid var(--dsw-alias-border-l1);font-size:12.5px;line-height:19px;color:var(--dsw-alias-label-secondary)}",
 			".sf-footMeta{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
-			".sf-origin{display:inline-flex;align-items:center;gap:4px;flex:none;color:var(--dsw-alias-brand-text);text-decoration:none;font-size:11.5px}",
+			".sf-cardActions{display:flex;align-items:center;gap:12px;flex:none;flex-wrap:wrap;justify-content:flex-end}",
+			".sf-chatBtn{display:inline-flex;align-items:center;gap:5px;height:28px;padding:0 9px;border:.5px solid var(--dsw-alias-border-l2);border-radius:7px;background:transparent;color:var(--dsw-alias-brand-text);font:inherit;font-size:12px;cursor:pointer;white-space:nowrap;transition:background .15s ease,border-color .15s ease}",
+			".sf-chatBtn:hover{background:color-mix(in srgb,var(--dsw-alias-brand-primary) 7%,transparent);border-color:color-mix(in srgb,var(--dsw-alias-brand-primary) 30%,var(--dsw-alias-border-l2))}",
+			".sf-chatBtn:focus-visible{outline:2px solid var(--dsw-alias-brand-primary);outline-offset:2px}",
+			".sf-origin{display:inline-flex;align-items:center;gap:4px;flex:none;color:var(--dsw-alias-brand-text);text-decoration:none;font-size:12px}",
 			".sf-origin:hover{text-decoration:underline}",
 			".sf-expand{margin-top:7px}",
 			".sf-expand button{border:0;background:transparent;color:var(--dsw-alias-label-tertiary);font:inherit;font-size:12px;cursor:pointer;padding:2px 0}",
@@ -550,7 +571,7 @@ window.__ModuleLoader__.load({
 			);
 		}
 
-		function SignalCard({ item, index, t }) {
+		function SignalCard({ item, index, t, onChat }) {
 			const [expanded, setExpanded] = useState(false);
 			const details = Array.isArray(item.details) ? item.details : [];
 			const tags = Array.isArray(item.tags) ? item.tags : [];
@@ -592,14 +613,28 @@ window.__ModuleLoader__.load({
 						].filter(Boolean).join(" · "),
 					),
 					h(
-						"a",
-						{
-							className: "sf-origin",
-							href: item.url,
-							target: "_blank",
-							rel: "noopener noreferrer",
-						},
-						t("viewOriginal"),
+						"div",
+						{ className: "sf-cardActions" },
+						h(
+							"button",
+							{
+								type: "button",
+								className: "sf-chatBtn",
+								onClick: () => onChat?.(item),
+							},
+							h(IconMessage, { size: 13 }),
+							t("continueChat"),
+						),
+						h(
+							"a",
+							{
+								className: "sf-origin",
+								href: item.url,
+								target: "_blank",
+								rel: "noopener noreferrer",
+							},
+							t("viewOriginal"),
+						),
 					),
 				),
 				details.length > 0 && h(
@@ -624,7 +659,7 @@ window.__ModuleLoader__.load({
 			);
 		}
 
-		function IntelCard({ item, t }) {
+		function IntelCard({ item, t, onChat }) {
 			const [expanded, setExpanded] = useState(false);
 			const category = itemCategory(item);
 			const tags = Array.isArray(item.tags) ? item.tags : [];
@@ -694,14 +729,28 @@ window.__ModuleLoader__.load({
 						].filter(Boolean).join(" · "),
 					),
 					h(
-						"a",
-						{
-							className: "sf-origin",
-							href: item.url,
-							target: "_blank",
-							rel: "noopener noreferrer",
-						},
-						t("viewOriginal"),
+						"div",
+						{ className: "sf-cardActions" },
+						h(
+							"button",
+							{
+								type: "button",
+								className: "sf-chatBtn",
+								onClick: () => onChat?.(item),
+							},
+							h(IconMessage, { size: 13 }),
+							t("continueChat"),
+						),
+						h(
+							"a",
+							{
+								className: "sf-origin",
+								href: item.url,
+								target: "_blank",
+								rel: "noopener noreferrer",
+							},
+							t("viewOriginal"),
+						),
 					),
 				),
 				details.length > 0 && h(
@@ -885,6 +934,7 @@ window.__ModuleLoader__.load({
 			const [tab, setTab] = useState("signals");
 			const [loading, setLoading] = useState(true);
 			const [error, setError] = useState(null);
+			const [notice, setNotice] = useState(null);
 			const [, setTick] = useState(0);
 			const [query, setQuery] = useState("");
 			const [categoryFilter, setCategoryFilter] = useState("all");
@@ -1012,6 +1062,7 @@ window.__ModuleLoader__.load({
 				setTab("signals");
 				setQuery("");
 				setCategoryFilter("all");
+				setNotice(null);
 				loadDigest(next);
 			}
 
@@ -1029,6 +1080,26 @@ window.__ModuleLoader__.load({
 					await pollJob(result.data.job.id);
 				} catch (fetchError) {
 					setError(fetchError instanceof Error ? fetchError.message : String(fetchError));
+				}
+			}
+
+			async function handleChat(item) {
+				setError(null);
+				setNotice(null);
+				if (typeof props.openArticleChat !== "function") {
+					setError(t("chatUnavailable"));
+					return;
+				}
+				try {
+					const result = await props.openArticleChat(item);
+					if (result && result.ok) return;
+					if (result && result.copied) {
+						setNotice(t("chatCopied"));
+						return;
+					}
+					setError(result && result.error ? `${t("chatUnavailable")} ${result.error}` : t("chatUnavailable"));
+				} catch (chatError) {
+					setError(chatError instanceof Error ? chatError.message : String(chatError));
 				}
 			}
 
@@ -1239,6 +1310,11 @@ window.__ModuleLoader__.load({
 							h("div", { className: "sf-skeleton" }),
 						),
 						!loading && h(JobBanner, { job, t }),
+						notice && h(
+							"div",
+							{ className: "sf-banner", "data-kind": "info", role: "status" },
+							h("div", { className: "sf-bannerText" }, notice),
+						),
 						error && h(
 							"div",
 							{ className: "sf-banner", "data-kind": "error", role: "alert" },
@@ -1296,6 +1372,7 @@ window.__ModuleLoader__.load({
 										item,
 										index,
 										t,
+										onChat: handleChat,
 									})),
 								),
 						),
@@ -1469,6 +1546,7 @@ window.__ModuleLoader__.load({
 												key: item.id || `${item.title}-${index}`,
 												item,
 												t,
+												onChat: handleChat,
 											})),
 										),
 								),
@@ -1513,9 +1591,60 @@ window.__ModuleLoader__.load({
 
 		const inject = ["slots", "locale"];
 
+		function buildArticlePrompt(item) {
+			const category = itemCategory(item);
+			const details = Array.isArray(item.details) ? item.details : [];
+			const evidence = item.evidence_note || evidenceFor(item);
+			return [
+				"我想继续讨论这条 AI 情报。",
+				"",
+				`标题：${item.title}`,
+				item.url ? `链接：${item.url}` : "",
+				`来源：${item.source}${category ? `（${category}）` : ""}`,
+				item.published_at ? `时间：${formatTime(item.published_at)}` : "",
+				"",
+				item.finding ? `发现了什么：${item.finding}` : "",
+				item.why_read ? `为什么值得看：${item.why_read}` : "",
+				evidence ? `依据与边界：${evidence}` : "",
+				item.summary ? `原始摘要：${item.summary}` : "",
+				details.length > 0 ? `关键信息：\n${details.map((detail) => `- ${detail}`).join("\n")}` : "",
+				"",
+				"请基于以上材料继续和我讨论：这条情报对我（独立开发者/产品人）意味着什么？有哪些可以验证的机会、风险或下一步？如果材料不足，请明确说需要我补充什么。",
+			].filter(Boolean).join("\n");
+		}
+
 		function apply(ctx) {
 			ctx.effect(() => ctx.locale.register(NS, { zh: ZH, en: EN }));
 			const t = typeof ctx.locale.bind === "function" ? ctx.locale.bind(NS) : (key) => ZH[key] || key;
+
+			const openArticleChat = async (item) => {
+				const prompt = buildArticlePrompt(item);
+				let copied = false;
+				try {
+					if (typeof navigator !== "undefined" && navigator.clipboard?.writeText) {
+						await navigator.clipboard.writeText(prompt);
+						copied = true;
+					}
+				} catch {
+					// Clipboard is best-effort; the new-conversation draft is the primary path.
+				}
+				try {
+					const workspace = typeof ctx.get === "function" ? ctx.get("uiWorkspace") : undefined;
+					const workspaceSnapshot = workspace?.workspaces?.list?.getSnapshot?.();
+					const workspaceCount = workspaceSnapshot?.items?.length ?? 0;
+					if (workspace && typeof workspace.startSession === "function" && workspaceCount > 0) {
+						workspace.startSession(undefined, {
+							prompt,
+							clearPreviousDraft: true,
+							whenDraftExists: "replace",
+						});
+						return { ok: true, copied };
+					}
+				} catch (error) {
+					return { ok: false, copied, error: error instanceof Error ? error.message : String(error) };
+				}
+				return { ok: false, copied, error: "uiWorkspace unavailable" };
+			};
 
 			ctx.slots.inject("sidebar.panellist", () =>
 				ctx.slots.register(
@@ -1536,6 +1665,7 @@ window.__ModuleLoader__.load({
 						name: "main",
 						key: "signalforge",
 						locale: NS,
+						inject: () => ({ openArticleChat }),
 					},
 					SignalForgePage,
 				),
@@ -1549,6 +1679,7 @@ window.__ModuleLoader__.load({
 						order: 24,
 						label: () => t("panel"),
 						locale: NS,
+						inject: () => ({ openArticleChat }),
 					},
 					SignalForgePage,
 				),

@@ -1,6 +1,6 @@
 {
   "name": "dsh-signalforge",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "SignalForge for DeepSeek Harness: pull daily AI news, get Chinese signals and business/engineering opportunities, and browse every candidate.",
   "type": "module",
   "license": "MIT",

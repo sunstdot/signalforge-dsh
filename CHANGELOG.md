@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.1 — 2026-11-05
+
+- Added **继续对话 / Discuss with AI** to every signal and candidate card.
+- The button opens a new Harness conversation with the title, URL, source, category, Chinese quick-read, evidence, summary, and key details already in the composer.
+- If no workspace/conversation service is available, the full prompt is copied to the clipboard with a notice.
+- Includes a local regression test for the article-to-chat prompt and `startSession` call.
+
 ## 0.1.0 — 2026-11-04
 
 First public release.

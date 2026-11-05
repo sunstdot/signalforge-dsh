@@ -13,6 +13,7 @@
 - **今日 AI 情报**：从 17 个来源抓候选，最多精选 5 条，每条写清「发现了什么 / 为什么值得看 / 依据与边界」，并保留原文链接。
 - **今日 AI 情报机会**：从当天信号出发，生成 3 个商业机会 + 3 个研发提效机会，包含触发点、产品形态、目标用户、MVP、风险或集成方式。
 - **全部情报**：111 条候选全部保留，每条都有中文速读，可按标题/来源/摘要搜索，按论文、仓库、模型、资讯、AI公司博客等分类筛选。
+- **继续对话**：每张卡片底部有「继续对话」，点击会把标题、链接、来源、中文速读、依据与关键信息填进一个新的 Harness 对话输入框，直接接着问。
 - **按天保存**：每天一个 digest，日期下拉回看；没有信号的日期不出现。
 - **用当前账号分析**：不配置 `.env`，不保存 API Key，直接走 Harness 当前默认模型（本机验证为 `deepseek-account / deepseek-flash`）。
 
@@ -52,7 +53,7 @@ dsh plugin --profile desktop add "github:sunstdot/signalforge-dsh"
 
 ```bash
 shasum -a 256 -c SHA256SUMS
-dsh plugin --profile desktop add "$PWD/dsh-signalforge-0.1.0.tgz"
+dsh plugin --profile desktop add "$PWD/dsh-signalforge-0.1.1.tgz"
 ```
 
 Linux 用 `sha256sum -c SHA256SUMS`。这种分发方式不依赖 npm，也不会在安装时执行构建。
@@ -86,7 +87,8 @@ dsh plugin --profile desktop add dsh-signalforge
    - 为全部候选写中文速读；
    - 保存当天结果。
 4. 在 **今日 AI 情报 / 今日 AI 情报机会 / 全部情报** 三个标签间切换。
-5. 用日期下拉回看历史。获取只对当天生效；历史日期只读。
+5. 想深挖某一条时，点卡片底部的 **继续对话**：会打开新对话，并把这条情报的标题、URL、来源、中文速读、依据和关键信息填进输入框。
+6. 用日期下拉回看历史。获取只对当天生效；历史日期只读。
 
 一次完整生成会调用多次当前账号的模型。面板会显示阶段和批次进度。对于只有英文摘要的历史日期，打开后点 **补全中文速读**，只会补速读，不重跑精选和机会，避免重复消耗 token。
 
@@ -157,6 +159,7 @@ npm test          # 桩模型检查信号/机会与中文速读映射
 npm run check     # 对全部 JS 文件执行 node --check
 node scripts/probe.mjs              # 只跑抓取，检查来源覆盖
 node scripts/test-client.mjs        # 客户端模块注册与首屏渲染
+node scripts/test-chat.mjs          # 继续对话：文章信息与 startSession 调用
 ```
 
 `node scripts/test-render-digest.mjs` 需要本地 `$DSH_HOME/signalforge` 里有真实 digest；`node scripts/backfill-items.mjs` 可以只补候选、不重跑模型。
@@ -190,6 +193,7 @@ src/legacy.js            可选：导入旧 SignalForge 历史简报
 SignalForge brings daily AI intelligence into DeepSeek Harness. One click fetches today's AI sources, selects up to five signals, writes Chinese quick-reads for every candidate, and generates business and engineering opportunities — all through the signed-in DeepSeek account.
 
 - Three tabs: selected signals, opportunities, and every candidate.
+- Every card has **Discuss with AI**, which opens a new Harness conversation with the title, URL, Chinese quick-read, evidence, and details already in the composer.
 - 17 login-free sources; Chinese quick-reads; paper/repo/model/news/blog categories.
 - One digest per day under `$DSH_HOME/signalforge`.
 
