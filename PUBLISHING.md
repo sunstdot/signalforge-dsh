@@ -31,20 +31,22 @@ GITHUB_REMOTE=https://github.com/sunstdot/signalforge-dsh.git \
   ./scripts/publish-github.sh sunstdot/signalforge-dsh
 ```
 
-### 3. Build the Release assets
+### 3. Create the first GitHub Release
+
+Pushing a `v*` tag triggers `.github/workflows/release.yml`, which runs `npm pack`, writes `SHA256SUMS`, and creates the GitHub Release with both assets:
+
+```bash
+git tag v0.1.0
+git push origin v0.1.0
+```
+
+If Actions are disabled or you prefer a manual release, build the assets locally:
 
 ```bash
 ./scripts/pack-release.sh
 ```
 
-This writes:
-
-```text
-dist/dsh-signalforge-0.1.0.tgz
-dist/SHA256SUMS
-```
-
-Open the repository's **Releases → Draft a new release**, create tag `v0.1.0`, upload both files, and publish. Users can then install the exact tarball and verify its checksum.
+Then open **Releases → Draft a new release**, create tag `v0.1.0`, upload `dist/dsh-signalforge-0.1.0.tgz` and `dist/SHA256SUMS`, and publish. Users can then install the exact tarball and verify its checksum.
 
 ### 4. Publish to npm (optional)
 
@@ -60,7 +62,7 @@ npm publish --registry=https://registry.npmjs.org --access public
 
 On a machine whose `.npmrc` points at a corporate registry, the explicit `--registry` flag is required; without it the package goes to the corporate registry and external users cannot install it.
 
-If you want tag-based npm publishes from GitHub Actions, add an `NPM_TOKEN` repository secret. The included workflow (`.github/workflows/publish.yml`) runs on `v*` tags. It is not needed for GitHub Release installs.
+The included `.github/workflows/release.yml` only creates GitHub Releases; it does not publish npm. npm publishing stays a manual step so a missing `NPM_TOKEN` never blocks a release.
 
 ## Every release
 
@@ -79,15 +81,16 @@ If you want tag-based npm publishes from GitHub Actions, add an `NPM_TOKEN` repo
    ./scripts/publish-github.sh sunstdot/signalforge-dsh
    ```
 
-4. Build the release assets:
+4. Tag and push. The release workflow builds and uploads `dist`-equivalent assets automatically:
 
    ```bash
-   ./scripts/pack-release.sh
+   git tag vX.Y.Z
+   git push origin vX.Y.Z
    ```
 
-5. Create a GitHub Release for the new tag and upload `dist/dsh-signalforge-<version>.tgz` plus `dist/SHA256SUMS`.
+   Manual fallback: `./scripts/pack-release.sh`, then create the release and upload `dist/dsh-signalforge-<version>.tgz` plus `dist/SHA256SUMS`.
 
-6. Optional: publish npm with `npm publish --registry=https://registry.npmjs.org --access public`.
+5. Optional: publish npm with `npm publish --registry=https://registry.npmjs.org --access public`.
 
 ## Verify an install
 
