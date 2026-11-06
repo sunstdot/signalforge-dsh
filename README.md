@@ -14,6 +14,7 @@
 - **今日 AI 情报机会**：从当天信号出发，生成 3 个商业机会 + 3 个研发提效机会，包含触发点、产品形态、目标用户、MVP、风险或集成方式。
 - **全部情报**：111 条候选全部保留，每条都有中文速读，可按标题/来源/摘要搜索，按论文、仓库、模型、资讯、AI公司博客等分类筛选。
 - **继续对话**：每张卡片底部有「继续对话」，点击会把标题、链接、来源、中文速读、依据与关键信息填进一个新的 Harness 对话输入框，直接接着问。
+- **论文精读**：论文卡片多一个「精读论文」按钮；顶部还有一个折叠的「论文精读」面板，可以粘贴情报之外的 arXiv / DOI / PDF 链接或标题 + 摘要。
 - **按天保存**：每天一个 digest，日期下拉回看；没有信号的日期不出现。
 - **用当前账号分析**：不配置 `.env`，不保存 API Key，直接走 Harness 当前默认模型（本机验证为 `deepseek-account / deepseek-flash`）。
 
@@ -53,7 +54,7 @@ dsh plugin --profile desktop add "github:sunstdot/signalforge-dsh"
 
 ```bash
 shasum -a 256 -c SHA256SUMS
-dsh plugin --profile desktop add "$PWD/dsh-signalforge-0.1.1.tgz"
+dsh plugin --profile desktop add "$PWD/dsh-signalforge-0.1.2.tgz"
 ```
 
 Linux 用 `sha256sum -c SHA256SUMS`。这种分发方式不依赖 npm，也不会在安装时执行构建。
@@ -88,7 +89,8 @@ dsh plugin --profile desktop add dsh-signalforge
    - 保存当天结果。
 4. 在 **今日 AI 情报 / 今日 AI 情报机会 / 全部情报** 三个标签间切换。
 5. 想深挖某一条时，点卡片底部的 **继续对话**：会打开新对话，并把这条情报的标题、URL、来源、中文速读、依据和关键信息填进输入框。
-6. 用日期下拉回看历史。获取只对当天生效；历史日期只读。
+6. 读论文时，论文卡片底部点 **精读论文**；情报之外的论文，点页面上方的 **论文精读** 面板，粘贴链接/标题摘要即可。
+7. 用日期下拉回看历史。获取只对当天生效；历史日期只读。
 
 一次完整生成会调用多次当前账号的模型。面板会显示阶段和批次进度。对于只有英文摘要的历史日期，打开后点 **补全中文速读**，只会补速读，不重跑精选和机会，避免重复消耗 token。
 
@@ -172,6 +174,7 @@ client.js                Web 客户端：侧栏面板与三个标签
 cordis.patch.yml         Bundle 默认配置
 src/sources.js           17 个来源、去重、排序、分类
 src/analyze.js           信号/机会提示词 + 批量中文速读
+src/paper-skill.js       paper-reading 技能：论文精读协议与输出契约
 src/pipeline.js          完整任务与只补速读任务
 src/store.js             每日 JSON + 索引
 src/http.js              同源 JSON API
@@ -194,6 +197,8 @@ SignalForge brings daily AI intelligence into DeepSeek Harness. One click fetche
 
 - Three tabs: selected signals, opportunities, and every candidate.
 - Every card has **Discuss with AI**, which opens a new Harness conversation with the title, URL, Chinese quick-read, evidence, and details already in the composer.
+- Paper cards add **Read paper**, which uses a registered `paper-reading` skill: classify the contribution, read out of order, separate assumptions, audit experiments, and decide adoption.
+- A collapsible **Paper reader** panel accepts manual arXiv/DOI/PDF links or a title + abstract for papers outside the digest.
 - 17 login-free sources; Chinese quick-reads; paper/repo/model/news/blog categories.
 - One digest per day under `$DSH_HOME/signalforge`.
 

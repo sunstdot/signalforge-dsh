@@ -74,6 +74,7 @@ console.log("has all hint:", text.includes("本次抓取的全部候选"));
 console.log("has filtered count:", /\d+ \/ \d+ 条/.test(text));
 console.log("category tags", (html.match(/class="sf-cat"/g) || []).length);
 console.log("chat buttons", (html.match(/class="sf-chatBtn"/g) || []).length);
+console.log("paper buttons", (html.match(/class="sf-paperBtn"/g) || []).length);
 console.log("category chips", (html.match(/class="sf-catTab"/g) || []).length);
 console.log("has raw summary label", text.includes("原始摘要"));
 console.log("text snippet:", text.slice(0, 700));

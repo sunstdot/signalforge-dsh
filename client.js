@@ -62,6 +62,12 @@ window.__ModuleLoader__.load({
 			verify: "请核对原文",
 			viewOriginal: "查看原文 ↗",
 			continueChat: "继续对话",
+			readPaper: "精读论文",
+			paperReadTitle: "论文精读",
+			paperReadHint: "情报里没有的论文，可以粘贴 arXiv / DOI / PDF 链接，或标题 + 摘要。",
+			paperPlaceholder: "粘贴 arXiv / DOI / PDF 链接，或标题 + 摘要…",
+			paperStart: "开始精读",
+			paperStarting: "准备中…",
 			chatCopied: "文章信息已复制，去对话里粘贴即可继续。",
 			chatUnavailable: "当前 Harness 组合没有可用的对话服务，无法打开新对话。",
 			showDetails: "展开细节",
@@ -163,6 +169,12 @@ window.__ModuleLoader__.load({
 			verify: "verify the source",
 			viewOriginal: "Open source ↗",
 			continueChat: "Discuss with AI",
+			readPaper: "Read paper",
+			paperReadTitle: "Paper reader",
+			paperReadHint: "For papers outside the digest, paste an arXiv / DOI / PDF link, or a title + abstract.",
+			paperPlaceholder: "Paste an arXiv / DOI / PDF link, or a title + abstract…",
+			paperStart: "Start reading",
+			paperStarting: "Preparing…",
 			chatCopied: "Article details copied — paste them into a conversation to continue.",
 			chatUnavailable: "This Harness composition has no conversation service to open a new chat.",
 			showDetails: "Show details",
@@ -271,6 +283,10 @@ window.__ModuleLoader__.load({
 
 		function categoryColor(category) {
 			return CATEGORY_COLORS[category] || "var(--dsw-alias-label-tertiary)";
+		}
+
+		function isPaper(item) {
+			return itemCategory(item) === "论文" || item?.source_type === "arxiv" || item?.source_type === "paper";
 		}
 
 		function evidenceFor(item) {
@@ -392,6 +408,18 @@ window.__ModuleLoader__.load({
 			);
 		}
 
+		function IconPaper({ size }) {
+			const s = size || 14;
+			return h(
+				"svg",
+				iconProps(s),
+				h("path", { d: "M4 2.5h5l3 3v8H4z" }),
+				h("path", { d: "M9 2.5v3h3" }),
+				h("path", { d: "M6 8.5h4" }),
+				h("path", { d: "M6 10.8h3" }),
+			);
+		}
+
 		function IconMessage({ size }) {
 			const s = size || 14;
 			return h(
@@ -487,7 +515,22 @@ window.__ModuleLoader__.load({
 			".sf-evidence{margin:10px 0 0;font-size:13px;line-height:21px;color:var(--dsw-alias-label-secondary)}",
 			".sf-cardFoot{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:15px;padding-top:11px;border-top:.5px solid var(--dsw-alias-border-l1);font-size:12.5px;line-height:19px;color:var(--dsw-alias-label-secondary)}",
 			".sf-footMeta{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
-			".sf-cardActions{display:flex;align-items:center;gap:12px;flex:none;flex-wrap:wrap;justify-content:flex-end}",
+			".sf-cardActions{display:flex;align-items:center;gap:10px;flex:none;flex-wrap:wrap;justify-content:flex-end}",
+			".sf-paperBtn{display:inline-flex;align-items:center;gap:5px;height:28px;padding:0 9px;border:.5px solid color-mix(in srgb,var(--dsw-alias-brand-primary) 22%,var(--dsw-alias-border-l2));border-radius:7px;background:color-mix(in srgb,var(--dsw-alias-brand-primary) 6%,transparent);color:var(--dsw-alias-brand-text);font:inherit;font-size:12px;cursor:pointer;white-space:nowrap;transition:background .15s ease}",
+			".sf-paperBtn:hover{background:color-mix(in srgb,var(--dsw-alias-brand-primary) 11%,transparent)}",
+			".sf-paperBtn:focus-visible{outline:2px solid var(--dsw-alias-brand-primary);outline-offset:2px}",
+			".sf-paperBox{margin:16px 0 0;border:.5px solid var(--dsw-alias-border-l2);border-radius:10px;background:var(--dsw-alias-bg-layer-1);padding:0 14px}",
+			".sf-paperSummary{display:flex;align-items:center;gap:8px;padding:11px 0;cursor:pointer;list-style:none;font-size:12.5px;color:var(--dsw-alias-label-secondary)}",
+			".sf-paperSummary::-webkit-details-marker{display:none}",
+			".sf-paperSummary::after{content:\"›\";margin-left:auto;color:var(--dsw-alias-label-tertiary);font-size:16px;line-height:1;transition:transform .15s ease}",
+			".sf-paperBox[open] .sf-paperSummary::after{transform:rotate(90deg)}",
+			".sf-paperSummaryMain{display:inline-flex;align-items:center;gap:6px;color:var(--dsw-alias-label-primary);font-weight:550;flex:none}",
+			".sf-paperSummaryHint{color:var(--dsw-alias-label-tertiary);font-size:11.5px;line-height:18px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
+			".sf-paperBox[open]{padding-bottom:14px}",
+			".sf-paperBody{display:flex;align-items:flex-end;gap:10px;padding-top:11px;border-top:.5px solid var(--dsw-alias-border-l1)}",
+			".sf-paperInput{flex:1;min-width:0;min-height:56px;resize:vertical;border:.5px solid var(--dsw-alias-border-l2);border-radius:8px;background:transparent;color:var(--dsw-alias-label-primary);font:inherit;font-size:13px;line-height:20px;padding:8px 10px;outline:none;box-sizing:border-box}",
+			".sf-paperInput:focus{border-color:var(--dsw-alias-brand-primary)}",
+			".sf-paperStart{height:34px;flex:none}",
 			".sf-chatBtn{display:inline-flex;align-items:center;gap:5px;height:28px;padding:0 9px;border:.5px solid var(--dsw-alias-border-l2);border-radius:7px;background:transparent;color:var(--dsw-alias-brand-text);font:inherit;font-size:12px;cursor:pointer;white-space:nowrap;transition:background .15s ease,border-color .15s ease}",
 			".sf-chatBtn:hover{background:color-mix(in srgb,var(--dsw-alias-brand-primary) 7%,transparent);border-color:color-mix(in srgb,var(--dsw-alias-brand-primary) 30%,var(--dsw-alias-border-l2))}",
 			".sf-chatBtn:focus-visible{outline:2px solid var(--dsw-alias-brand-primary);outline-offset:2px}",
@@ -553,7 +596,7 @@ window.__ModuleLoader__.load({
 			"@keyframes sf-spin{to{transform:rotate(360deg)}}",
 			"@keyframes sf-shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}",
 			"@keyframes sf-fade{from{opacity:0;transform:translateY(2px)}to{opacity:1;transform:none}}",
-			"@media (max-width:820px){.sf-inner{padding:24px 16px 60px}.sf-title{font-size:22px;line-height:30px}.sf-head{gap:14px}.sf-oppGrid{grid-template-columns:minmax(0,1fr)}.sf-toolbar{align-items:flex-start;flex-direction:column}.sf-tabs{width:100%;overflow:auto}.sf-dateSelect{font-size:16px}.sf-card{padding:18px 16px 15px;border-radius:11px}.sf-cardTitle{font-size:16.5px;line-height:24px}.sf-line{font-size:14px;line-height:23px}.sf-evidence{font-size:12.5px;line-height:20px}.sf-cat{font-size:11px;line-height:19px}.sf-list{gap:14px}}",
+			"@media (max-width:820px){.sf-inner{padding:24px 16px 60px}.sf-title{font-size:22px;line-height:30px}.sf-head{gap:14px}.sf-oppGrid{grid-template-columns:minmax(0,1fr)}.sf-toolbar{align-items:flex-start;flex-direction:column}.sf-tabs{width:100%;overflow:auto}.sf-dateSelect{font-size:16px}.sf-card{padding:18px 16px 15px;border-radius:11px}.sf-cardTitle{font-size:16.5px;line-height:24px}.sf-line{font-size:14px;line-height:23px}.sf-evidence{font-size:12.5px;line-height:20px}.sf-cat{font-size:11px;line-height:19px}.sf-list{gap:14px}.sf-paperBody{flex-direction:column;align-items:stretch}.sf-paperStart{width:100%}.sf-paperSummaryHint{display:none}}",
 			"@media (prefers-reduced-motion:reduce){.sf-spinner,.sf-skeleton{animation:none}.sf-fadeIn{animation:none}}",
 		].join("");
 
@@ -571,7 +614,7 @@ window.__ModuleLoader__.load({
 			);
 		}
 
-		function SignalCard({ item, index, t, onChat }) {
+		function SignalCard({ item, index, t, onChat, onPaper }) {
 			const [expanded, setExpanded] = useState(false);
 			const details = Array.isArray(item.details) ? item.details : [];
 			const tags = Array.isArray(item.tags) ? item.tags : [];
@@ -615,6 +658,16 @@ window.__ModuleLoader__.load({
 					h(
 						"div",
 						{ className: "sf-cardActions" },
+						isPaper(item) && h(
+							"button",
+							{
+								type: "button",
+								className: "sf-paperBtn",
+								onClick: () => onPaper?.(item),
+							},
+							h(IconPaper, { size: 13 }),
+							t("readPaper"),
+						),
 						h(
 							"button",
 							{
@@ -659,7 +712,7 @@ window.__ModuleLoader__.load({
 			);
 		}
 
-		function IntelCard({ item, t, onChat }) {
+		function IntelCard({ item, t, onChat, onPaper }) {
 			const [expanded, setExpanded] = useState(false);
 			const category = itemCategory(item);
 			const tags = Array.isArray(item.tags) ? item.tags : [];
@@ -731,6 +784,16 @@ window.__ModuleLoader__.load({
 					h(
 						"div",
 						{ className: "sf-cardActions" },
+						isPaper(item) && h(
+							"button",
+							{
+								type: "button",
+								className: "sf-paperBtn",
+								onClick: () => onPaper?.(item),
+							},
+							h(IconPaper, { size: 13 }),
+							t("readPaper"),
+						),
 						h(
 							"button",
 							{
@@ -938,6 +1001,8 @@ window.__ModuleLoader__.load({
 			const [, setTick] = useState(0);
 			const [query, setQuery] = useState("");
 			const [categoryFilter, setCategoryFilter] = useState("all");
+			const [paperInput, setPaperInput] = useState("");
+			const [paperBusy, setPaperBusy] = useState(false);
 			const pollRef = useRef(null);
 			const dateRef = useRef("");
 			const aliveRef = useRef(true);
@@ -1083,23 +1148,47 @@ window.__ModuleLoader__.load({
 				}
 			}
 
-			async function handleChat(item) {
+			async function runChatAction(action, { clearPaper = false } = {}) {
 				setError(null);
 				setNotice(null);
-				if (typeof props.openArticleChat !== "function") {
+				if (typeof action !== "function") {
 					setError(t("chatUnavailable"));
-					return;
+					return false;
 				}
 				try {
-					const result = await props.openArticleChat(item);
-					if (result && result.ok) return;
+					const result = await action();
+					if (result && result.ok) {
+						if (clearPaper) setPaperInput("");
+						return true;
+					}
 					if (result && result.copied) {
 						setNotice(t("chatCopied"));
-						return;
+						return false;
 					}
 					setError(result && result.error ? `${t("chatUnavailable")} ${result.error}` : t("chatUnavailable"));
+					return false;
 				} catch (chatError) {
 					setError(chatError instanceof Error ? chatError.message : String(chatError));
+					return false;
+				}
+			}
+
+			function handleChat(item) {
+				return runChatAction(() => props.openArticleChat?.(item));
+			}
+
+			function handleReadPaper(item) {
+				return runChatAction(() => props.openPaperChat?.(item));
+			}
+
+			async function startManualPaper() {
+				const raw = paperInput.trim();
+				if (!raw || paperBusy) return;
+				setPaperBusy(true);
+				try {
+					await runChatAction(() => props.openManualPaper?.(raw), { clearPaper: true });
+				} finally {
+					setPaperBusy(false);
 				}
 			}
 
@@ -1303,6 +1392,44 @@ window.__ModuleLoader__.load({
 								),
 							),
 						),
+						!loading && h(
+							"details",
+							{ className: "sf-paperBox" },
+							h(
+								"summary",
+								{ className: "sf-paperSummary" },
+								h("span", { className: "sf-paperSummaryMain" }, h(IconPaper, { size: 15 }), t("paperReadTitle")),
+								h("span", { className: "sf-paperSummaryHint" }, t("paperReadHint")),
+							),
+							h(
+								"div",
+								{ className: "sf-paperBody" },
+								h("textarea", {
+									className: "sf-paperInput",
+									rows: 2,
+									value: paperInput,
+									placeholder: t("paperPlaceholder"),
+									"aria-label": t("paperPlaceholder"),
+									onChange: (event) => setPaperInput(event.target.value),
+									onKeyDown: (event) => {
+										if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
+											event.preventDefault();
+											startManualPaper();
+										}
+									},
+								}),
+								h(
+									"button",
+									{
+										type: "button",
+										className: "sf-primary sf-paperStart",
+										onClick: startManualPaper,
+										disabled: !paperInput.trim() || paperBusy,
+									},
+									paperBusy ? t("paperStarting") : t("paperStart"),
+								),
+							),
+						),
 						loading && h(
 							"div",
 							{ className: "sf-list", style: { marginTop: 18 } },
@@ -1373,6 +1500,7 @@ window.__ModuleLoader__.load({
 										index,
 										t,
 										onChat: handleChat,
+										onPaper: handleReadPaper,
 									})),
 								),
 						),
@@ -1547,6 +1675,7 @@ window.__ModuleLoader__.load({
 												item,
 												t,
 												onChat: handleChat,
+												onPaper: handleReadPaper,
 											})),
 										),
 								),
@@ -1613,12 +1742,64 @@ window.__ModuleLoader__.load({
 			].filter(Boolean).join("\n");
 		}
 
+		const PAPER_OUTPUT_ASK = [
+			"先抓取全文；如果抓不到，明确说明只能基于已有材料做有限判断。不要假装看过图片，图只能读 caption 和正文描述。",
+			"请按论文精读协议输出：论文类型与一句话贡献、阅读顺序、核心主张与边界、假设与结果、关键方程、实验审查、心智图谱、停止条件、是否采用的判断、输出练习。",
+			"中文回答，术语保留英文，引用章节/图表编号；证据不足或未获取的内容直接说明。",
+		].join("\n");
+
+		function buildPaperPrompt(item) {
+			const category = itemCategory(item);
+			const details = Array.isArray(item.details) ? item.details : [];
+			return [
+				"请使用 paper-reading 技能，按论文精读协议读这篇论文。",
+				"",
+				`标题：${item.title}`,
+				item.url ? `链接：${item.url}` : "",
+				`来源：${item.source}${category ? `（${category}）` : ""}`,
+				item.published_at ? `时间：${formatTime(item.published_at)}` : "",
+				"",
+				item.summary ? `摘要：${item.summary}` : "",
+				item.finding ? `情报里的速读：${item.finding}` : "",
+				item.why_read ? `情报里的判断：${item.why_read}` : "",
+				details.length > 0 ? `关键信息：\n${details.map((detail) => `- ${detail}`).join("\n")}` : "",
+				"",
+				PAPER_OUTPUT_ASK,
+			].filter(Boolean).join("\n");
+		}
+
+		function normalizePaperReference(raw) {
+			const text = String(raw ?? "").trim();
+			if (!text) return { kind: "empty", text: "" };
+			if (/^https?:\/\//i.test(text)) return { kind: "url", text };
+			const arxiv = text.match(/^(?:arxiv:\s*)?(\d{4}\.\d{4,5})(v\d+)?$/i);
+			if (arxiv) return { kind: "url", text: `https://arxiv.org/abs/${arxiv[1]}${arxiv[2] ?? ""}` };
+			const doi = text.match(/^10\.\d{4,9}\/\S+$/);
+			if (doi) return { kind: "doi", text: `https://doi.org/${text}` };
+			return { kind: "text", text };
+		}
+
+		function buildManualPaperPrompt(raw) {
+			const reference = normalizePaperReference(raw);
+			const target = reference.kind === "url"
+				? `论文链接：${reference.text}`
+				: reference.kind === "doi"
+					? `论文 DOI：${reference.text}`
+					: `用户提供的论文信息：\n${reference.text}`;
+			return [
+				"请使用 paper-reading 技能，按论文精读协议读这篇论文。",
+				"",
+				target,
+				"",
+				PAPER_OUTPUT_ASK,
+			].filter(Boolean).join("\n");
+		}
+
 		function apply(ctx) {
 			ctx.effect(() => ctx.locale.register(NS, { zh: ZH, en: EN }));
 			const t = typeof ctx.locale.bind === "function" ? ctx.locale.bind(NS) : (key) => ZH[key] || key;
 
-			const openArticleChat = async (item) => {
-				const prompt = buildArticlePrompt(item);
+			const startChatWithPrompt = async (prompt) => {
 				let copied = false;
 				try {
 					if (typeof navigator !== "undefined" && navigator.clipboard?.writeText) {
@@ -1646,6 +1827,10 @@ window.__ModuleLoader__.load({
 				return { ok: false, copied, error: "uiWorkspace unavailable" };
 			};
 
+			const openArticleChat = (item) => startChatWithPrompt(buildArticlePrompt(item));
+			const openPaperChat = (item) => startChatWithPrompt(buildPaperPrompt(item));
+			const openManualPaper = (raw) => startChatWithPrompt(buildManualPaperPrompt(raw));
+
 			ctx.slots.inject("sidebar.panellist", () =>
 				ctx.slots.register(
 					{
@@ -1665,7 +1850,7 @@ window.__ModuleLoader__.load({
 						name: "main",
 						key: "signalforge",
 						locale: NS,
-						inject: () => ({ openArticleChat }),
+						inject: () => ({ openArticleChat, openPaperChat, openManualPaper }),
 					},
 					SignalForgePage,
 				),
@@ -1679,7 +1864,7 @@ window.__ModuleLoader__.load({
 						order: 24,
 						label: () => t("panel"),
 						locale: NS,
-						inject: () => ({ openArticleChat }),
+						inject: () => ({ openArticleChat, openPaperChat, openManualPaper }),
 					},
 					SignalForgePage,
 				),

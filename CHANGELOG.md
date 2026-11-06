@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.2 — 2026-11-06
+
+- Added a host-registered **paper-reading** skill with the full "papers are compressed arguments" protocol and a fixed Chinese output contract.
+- Paper cards now show **精读论文** next to 继续对话; it opens a new conversation with the paper title, URL, abstract, and intel quick-read already in the composer.
+- Added a collapsed **论文精读** panel above the tabs for papers outside the digest: paste an arXiv / DOI / PDF link, or a title + abstract.
+- The paper prompt tells the agent to fetch full text first, mark unavailable evidence instead of inventing it, and not pretend to inspect figure pixels.
+- Added regression coverage for article→chat, paper→chat, and manual paper/DOI normalization.
+
 ## 0.1.1 — 2026-11-05
 
 - Added **继续对话 / Discuss with AI** to every signal and candidate card.

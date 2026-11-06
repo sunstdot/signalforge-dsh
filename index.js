@@ -18,6 +18,7 @@ import os from "node:os";
 import path from "node:path";
 import { registerApi } from "./src/http.js";
 import { createPipeline } from "./src/pipeline.js";
+import { PAPER_SKILL_CONTENT, PAPER_SKILL_DESCRIPTION, PAPER_SKILL_NAME, PAPER_SKILL_WHEN } from "./src/paper-skill.js";
 import { DigestStore } from "./src/store.js";
 
 export const name = "signalforge";
@@ -54,6 +55,18 @@ export function apply(ctx, config = {}) {
 			store,
 			config: { ...options, dataDir },
 		});
+	});
+
+	ctx.inject(["skills"], (skillCtx) => {
+		skillCtx.effect(
+			() => skillCtx.skills.register({
+				name: PAPER_SKILL_NAME,
+				description: PAPER_SKILL_DESCRIPTION,
+				whenToUse: PAPER_SKILL_WHEN,
+				content: PAPER_SKILL_CONTENT,
+			}),
+			"signalforge: paper reading skill",
+		);
 	});
 
 	logger.info?.(`[signalforge] ready · data=${dataDir} · tz=${pipeline.settings.timezone}`);
