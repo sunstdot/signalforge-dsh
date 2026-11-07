@@ -36,8 +36,8 @@ GITHUB_REMOTE=https://github.com/sunstdot/signalforge-dsh.git \
 Pushing a `v*` tag triggers `.github/workflows/release.yml`, which runs `npm pack`, writes `SHA256SUMS`, and creates the GitHub Release with both assets:
 
 ```bash
-git tag v0.1.2
-git push origin v0.1.2
+git tag v0.1.3
+git push origin v0.1.3
 ```
 
 If Actions are disabled or you prefer a manual release, build the assets locally:
@@ -46,7 +46,7 @@ If Actions are disabled or you prefer a manual release, build the assets locally
 ./scripts/pack-release.sh
 ```
 
-Then open **Releases → Draft a new release**, create tag `v0.1.2`, upload `dist/dsh-signalforge-0.1.2.tgz` and `dist/SHA256SUMS`, and publish. Users can then install the exact tarball and verify its checksum.
+Then open **Releases → Draft a new release**, create tag `v0.1.3`, upload `dist/dsh-signalforge-0.1.3.tgz` and `dist/SHA256SUMS`, and publish. Users can then install the exact tarball and verify its checksum.
 
 ### 4. Publish to npm (optional)
 
@@ -98,7 +98,7 @@ Release tarball (recommended):
 
 ```bash
 shasum -a 256 -c SHA256SUMS
-dsh plugin --profile desktop add "$PWD/dsh-signalforge-0.1.2.tgz"
+dsh plugin --profile desktop add "$PWD/dsh-signalforge-0.1.3.tgz"
 ```
 
 GitHub source:

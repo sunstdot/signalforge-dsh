@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.1.3 — 2026-11-07
+
+- Expanded from 17 to **28 sources**, including 15 official AI company blogs.
+- Added RSS/Atom sources: Google Research, NVIDIA Developer, Apple Machine Learning, LangChain, Cloudflare AI, AWS Machine Learning.
+- Added HTML-adapted sources for sites without RSS: Anthropic News, Anthropic Engineering, Cognition, Meta AI, Cohere.
+- Official blog lookback is now 14 days (news/community remain 48 hours), so weekly-updated labs still appear.
+- Model candidate pool raised to 72, with per-source caps, a 24-official cap, and round-robin source diversification so one company cannot dominate.
+- Source fetch retries once on transient network failures.
+- Updated README source list and categories.
+
 ## 0.1.2 — 2026-11-06
 
 - Added a host-registered **paper-reading** skill with the full "papers are compressed arguments" protocol and a fixed Chinese output contract.

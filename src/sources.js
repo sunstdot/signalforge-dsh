@@ -18,10 +18,16 @@ import {
  * parallel and a single failure only removes that source from the edition.
  */
 export const FEEDS = [
-	{ key: "openai", name: "OpenAI News", url: "https://openai.com/news/rss.xml", source_type: "blog", official: true, max: 8 },
-	{ key: "deepmind", name: "Google DeepMind", url: "https://deepmind.google/blog/rss.xml", source_type: "blog", official: true, max: 8 },
-	{ key: "googleai", name: "Google AI Blog", url: "https://blog.google/technology/ai/rss/", source_type: "blog", official: true, max: 8 },
-	{ key: "hfblog", name: "Hugging Face Blog", url: "https://huggingface.co/blog/feed.xml", source_type: "blog", official: true, max: 8 },
+	{ key: "openai", name: "OpenAI News", url: "https://openai.com/news/rss.xml", source_type: "blog", official: true, max: 6, lookbackHours: 336 },
+	{ key: "deepmind", name: "Google DeepMind", url: "https://deepmind.google/blog/rss.xml", source_type: "blog", official: true, max: 6, lookbackHours: 336 },
+	{ key: "googleai", name: "Google AI Blog", url: "https://blog.google/technology/ai/rss/", source_type: "blog", official: true, max: 6, lookbackHours: 336 },
+	{ key: "hfblog", name: "Hugging Face Blog", url: "https://huggingface.co/blog/feed.xml", source_type: "blog", official: true, max: 6, lookbackHours: 336 },
+	{ key: "googleresearch", name: "Google Research", url: "https://research.google/blog/rss/", source_type: "blog", official: true, max: 6, lookbackHours: 336 },
+	{ key: "nvidia", name: "NVIDIA Developer", url: "https://developer.nvidia.com/blog/feed/", source_type: "blog", official: true, max: 6, lookbackHours: 336 },
+	{ key: "appleml", name: "Apple Machine Learning", url: "https://machinelearning.apple.com/rss.xml", source_type: "blog", official: true, max: 6, lookbackHours: 336 },
+	{ key: "langchain", name: "LangChain Blog", url: "https://blog.langchain.dev/rss.xml", source_type: "blog", official: true, max: 6, lookbackHours: 336 },
+	{ key: "cloudflareai", name: "Cloudflare AI", url: "https://blog.cloudflare.com/tag/ai/rss/", source_type: "blog", official: true, max: 6, lookbackHours: 336 },
+	{ key: "awsml", name: "AWS Machine Learning", url: "https://aws.amazon.com/blogs/machine-learning/feed/", source_type: "blog", official: true, max: 6, lookbackHours: 336 },
 	{ key: "latent", name: "Latent Space", url: "https://www.latent.space/feed", source_type: "newsletter", official: false, max: 8 },
 	{ key: "smol", name: "Smol AI News", url: "https://news.smol.ai/rss.xml", source_type: "newsletter", official: false, max: 6 },
 	{ key: "decoder", name: "The Decoder", url: "https://the-decoder.com/feed/", source_type: "news", official: false, max: 8 },
@@ -30,6 +36,57 @@ export const FEEDS = [
 	{ key: "oneusefulthing", name: "One Useful Thing", url: "https://www.oneusefulthing.org/feed", source_type: "newsletter", official: false, max: 4 },
 	{ key: "importai", name: "Import AI", url: "https://importai.substack.com/feed", source_type: "newsletter", official: false, max: 4 },
 	{ key: "interconnects", name: "Interconnects", url: "https://www.interconnects.ai/feed", source_type: "newsletter", official: false, max: 4 },
+];
+
+/**
+ * Company blogs without a usable RSS/Atom feed. The listing page supplies
+ * article URLs; each article page supplies title, description and date.
+ */
+export const HTML_SOURCES = [
+	{
+		key: "anthropic-news",
+		name: "Anthropic News",
+		listingUrl: "https://www.anthropic.com/news",
+		patterns: [/^\/news\/[^/]+$/],
+		exclude: [/^\/news\/(announcements|product|features|partnerships)\/?$/],
+		max: 4,
+		lookbackHours: 336,
+	},
+	{
+		key: "anthropic-engineering",
+		name: "Anthropic Engineering",
+		listingUrl: "https://www.anthropic.com/engineering",
+		patterns: [/^\/research\/[^/]+$/],
+		max: 4,
+		lookbackHours: 336,
+	},
+	{
+		key: "cognition",
+		name: "Cognition Blog",
+		listingUrl: "https://cognition.ai/blog",
+		patterns: [/^\/blog\/[^/]+\/?$/],
+		exclude: [/^\/blog\/(tag|category|author)\/.+$/, /^\/blog\/?$/],
+		max: 5,
+		lookbackHours: 336,
+	},
+	{
+		key: "meta-ai",
+		name: "Meta AI Blog",
+		listingUrl: "https://ai.meta.com/blog/",
+		patterns: [/^\/blog\/[^/]+\/?$/],
+		exclude: [/^\/blog\/?$/],
+		max: 4,
+		lookbackHours: 336,
+	},
+	{
+		key: "cohere",
+		name: "Cohere Blog",
+		listingUrl: "https://cohere.com/blog",
+		patterns: [/^\/blog\/[^/]+\/?$/],
+		exclude: [/^\/blog\/tag\/.+$/, /^\/blog\/?$/],
+		max: 5,
+		lookbackHours: 336,
+	},
 ];
 
 const HN_TOP = "https://hacker-news.firebaseio.com/v0/topstories.json";
@@ -105,7 +162,127 @@ function withinLookback(published, cutoff) {
 	return date !== null && date.getTime() >= cutoff && date.getTime() <= Date.now() + 3600000;
 }
 
-async function collectFeed(feed, { cutoff, timeoutMs, signal }) {
+function metaContent(html) {
+	const map = new Map();
+	for (const tag of String(html ?? "").match(/<meta\b[^>]*>/gi) ?? []) {
+		const key = tag.match(/(?:property|name)=["']([^"']+)["']/i)?.[1]?.toLowerCase();
+		const content = tag.match(/content=["']([^"']*)["']/i)?.[1];
+		if (key && content !== undefined && !map.has(key)) map.set(key, stripHtml(content));
+	}
+	return map;
+}
+
+function firstParagraph(html) {
+	const body = String(html ?? "").replace(/<(script|style)\b[^>]*>[\s\S]*?<\/\1>/gi, " ");
+	const paragraphs = [...body.matchAll(/<p\b[^>]*>([\s\S]*?)<\/p>/gi)]
+		.map((match) => stripHtml(match[1]))
+		.filter((text) => text.length >= 40);
+	return paragraphs[0] ?? "";
+}
+
+function extractArticleMeta(html, fallbackTitle) {
+	const meta = metaContent(html);
+	const titleTag = String(html ?? "").match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1] ?? "";
+	const h1 = String(html ?? "").match(/<h1[^>]*>([\s\S]*?)<\/h1>/i)?.[1] ?? "";
+	const paragraph = firstParagraph(html);
+	const title = truncate(stripHtml(
+		meta.get("og:title")
+		|| meta.get("twitter:title")
+		|| meta.get("title")
+		|| titleTag
+		|| h1
+		|| fallbackTitle
+		|| ""
+	), 220);
+	let summary = truncate(stripHtml(
+		meta.get("og:description")
+		|| meta.get("description")
+		|| meta.get("twitter:description")
+		|| paragraph
+		|| ""
+	), 700);
+	if (/^Anthropic is an AI safety and research company/i.test(summary) && paragraph) {
+		summary = truncate(paragraph, 700);
+	}
+	const jsonLdDate = String(html ?? "").match(/"datePublished"\s*:\s*"([^"]+)"/i)?.[1];
+	const timeTag = String(html ?? "").match(/<time\b[^>]*datetime=["']([^"']+)["']/i)?.[1];
+	const textDate = paragraph.match(/\b(January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2},\s+\d{4}\b/)?.[0];
+	const published = meta.get("article:published_time") || jsonLdDate || timeTag || textDate || null;
+	return {
+		title,
+		summary,
+		published_at: isoOrNull(published),
+	};
+}
+
+function extractListingLinks(html, source) {
+	const origin = new URL(source.listingUrl).origin;
+	const seen = new Set();
+	const out = [];
+	for (const match of String(html ?? "").matchAll(/<a\b[^>]*href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi)) {
+		let url;
+		try {
+			url = new URL(match[1], source.listingUrl);
+		} catch {
+			continue;
+		}
+		if (url.origin !== origin || !/^https?:$/.test(url.protocol)) continue;
+		const pathname = url.pathname;
+		if (!source.patterns.some((pattern) => pattern.test(pathname))) continue;
+		if (source.exclude?.some((pattern) => pattern.test(pathname))) continue;
+		const normalized = normalizeUrl(url.toString());
+		if (!normalized || seen.has(normalized)) continue;
+		seen.add(normalized);
+		const title = truncate(stripHtml(match[2]), 200);
+		out.push({ url: normalized, title });
+		if (out.length >= source.max * 2) break;
+	}
+	return out;
+}
+
+async function collectHtmlBlog(source, { now, defaultLookbackHours, timeoutMs, signal }) {
+	const listing = await fetchText(source.listingUrl, { timeoutMs, signal });
+	const links = extractListingLinks(listing, source);
+	const articles = await mapLimit(links, 4, async (link) => {
+		try {
+			const html = await fetchText(link.url, { timeoutMs, signal });
+			const meta = extractArticleMeta(html, link.title);
+			return {
+				url: link.url,
+				title: meta.title || link.title,
+				summary: meta.summary,
+				published_at: meta.published_at,
+			};
+		} catch {
+			return { url: link.url, title: link.title, summary: "", published_at: null };
+		}
+	});
+	const cutoff = now - (source.lookbackHours ?? defaultLookbackHours) * 3600000;
+	const collected = [];
+	for (const article of articles) {
+		if (!article.title) continue;
+		if (article.published_at) {
+			const published = parseDate(article.published_at);
+			if (published === null || published.getTime() < cutoff || published.getTime() > Date.now() + 3600000) continue;
+		}
+		const candidate = makeCandidate({
+			title: article.title,
+			url: article.url,
+			source: source.name,
+			source_type: "blog",
+			published_at: article.published_at,
+			summary: article.summary,
+			metadata: { official: true, feed: source.key, html: true, engagement: "" },
+			baseScore: 7,
+		});
+		if (candidate) collected.push(candidate);
+		if (collected.length >= source.max) break;
+	}
+	return collected;
+}
+
+async function collectFeed(feed, { now, defaultLookbackHours, timeoutMs, signal }) {
+	const cutoff = now - (feed.lookbackHours ?? defaultLookbackHours) * 3600000;
 	const xml = await fetchText(feed.url, { timeoutMs, signal });
 	const items = parseFeed(xml);
 	const collected = [];
@@ -312,7 +489,38 @@ function displayItem(candidate) {
 	};
 }
 
-function rankAndCap(candidates, { limit, maxPerSource = 8, maxPerType = 18 }) {
+function sourceCap(candidate) {
+	if (candidate.source === "arXiv") return 15;
+	if (candidate.source === "Hacker News") return 8;
+	if (candidate.source === "GitHub Trending") return 6;
+	if (candidate.metadata?.official === true) return 4;
+	return 5;
+}
+
+/** Interleave sources so one prolific blog cannot own the model prompt. */
+function diversifyBySource(sorted) {
+	const groups = new Map();
+	for (const candidate of sorted) {
+		const group = groups.get(candidate.source) ?? [];
+		group.push(candidate);
+		groups.set(candidate.source, group);
+	}
+	const queues = [...groups.values()];
+	const out = [];
+	let added = true;
+	while (added) {
+		added = false;
+		for (const queue of queues) {
+			const candidate = queue.shift();
+			if (candidate === undefined) continue;
+			out.push(candidate);
+			added = true;
+		}
+	}
+	return out;
+}
+
+function rankAndCap(candidates, { limit, maxPerType = 30, maxOfficial = 24 }) {
 	const sorted = candidates.slice().sort((a, b) => {
 		if (b.relevance_score !== a.relevance_score) return b.relevance_score - a.relevance_score;
 		return String(b.published_at ?? "").localeCompare(String(a.published_at ?? ""));
@@ -320,15 +528,19 @@ function rankAndCap(candidates, { limit, maxPerSource = 8, maxPerType = 18 }) {
 	const out = [];
 	const perSource = new Map();
 	const perType = new Map();
-	for (const candidate of sorted) {
+	let officialCount = 0;
+	for (const candidate of diversifyBySource(sorted)) {
 		if (out.length >= limit) break;
 		const sourceCount = perSource.get(candidate.source) ?? 0;
-		if (sourceCount >= maxPerSource) continue;
+		if (sourceCount >= sourceCap(candidate)) continue;
 		const typeCount = perType.get(candidate.source_type) ?? 0;
 		if (typeCount >= maxPerType) continue;
+		const official = candidate.metadata?.official === true;
+		if (official && officialCount >= maxOfficial) continue;
 		out.push(candidate);
 		perSource.set(candidate.source, sourceCount + 1);
 		perType.set(candidate.source_type, typeCount + 1);
+		if (official) officialCount += 1;
 	}
 	return out;
 }
@@ -347,7 +559,11 @@ export async function collectCandidates({ lookbackHours = 48, timeoutMs = 16000,
 	const tasks = [
 		...FEEDS.map((feed) => ({
 			name: feed.name,
-			run: () => collectFeed(feed, { cutoff, timeoutMs, signal }),
+			run: () => collectFeed(feed, { now: startedAt, defaultLookbackHours: lookbackHours, timeoutMs, signal }),
+		})),
+		...HTML_SOURCES.map((source) => ({
+			name: source.name,
+			run: () => collectHtmlBlog(source, { now: startedAt, defaultLookbackHours: lookbackHours, timeoutMs, signal }),
 		})),
 		{ name: "Hacker News", run: () => collectHnTop({ cutoff, timeoutMs, signal }) },
 		{ name: "Hacker News Search", run: () => collectHnSearch({ cutoff, timeoutMs, signal }) },
@@ -387,7 +603,7 @@ export async function collectCandidates({ lookbackHours = 48, timeoutMs = 16000,
 	const flattened = results.flat();
 	const unique = dedupe(flattened);
 	for (const candidate of unique) score(candidate, startedAt);
-	const selected = rankAndCap(unique, { limit: 60 });
+	const selected = rankAndCap(unique, { limit: 72, maxPerType: 30, maxOfficial: 24 });
 	const allItems = unique
 		.slice()
 		.sort((a, b) => (b.relevance_score - a.relevance_score) || String(b.published_at ?? "").localeCompare(String(a.published_at ?? "")))

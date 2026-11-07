@@ -8,7 +8,8 @@ const React = require("react");
 const { renderToStaticMarkup } = require("react-dom/server");
 
 const dataDir = path.join(process.env.DSH_HOME || path.join(os.homedir(), ".dsh"), "signalforge");
-const digest = JSON.parse(readFileSync(path.join(dataDir, "digests/2026-11-04.json"), "utf8"));
+const renderDate = process.env.SF_DATE || "2026-11-04";
+const digest = JSON.parse(readFileSync(path.join(dataDir, `digests/${renderDate}.json`), "utf8"));
 const index = JSON.parse(readFileSync(path.join(dataDir, "index.json"), "utf8"));
 
 const registrations = [];
@@ -51,8 +52,8 @@ const main = registrations.find((item) => item.options.name === "main");
 
 const tab = process.env.SF_TAB || "signals";
 preset.push(
-	"2026-11-04",
-	"2026-11-04",
+	renderDate,
+	renderDate,
 	digest,
 	index.dates,
 	null,

@@ -174,10 +174,18 @@ export function createPipeline({ ctx, store, config = {}, logger } = {}) {
 	}
 
 	async function runEnrich(job, digest) {
-		const items = Array.isArray(digest.items) ? digest.items : [];
-		job.progress.enrichTotal = items.length;
-		setStage(job, "enrich", `AI 正在为全部 ${items.length} 条候选补中文速读…`);
-		const result = await enrichItems(ctx, items, {
+		const allItems = Array.isArray(digest.items) ? digest.items : [];
+		const pending = allItems.filter((item) => !item.finding || !item.why_read);
+		job.progress.enrichTotal = pending.length;
+		if (pending.length === 0) {
+			job.status = "done";
+			job.stage = "done";
+			job.message = "全部候选都已有中文速读";
+			job.finishedAt = new Date().toISOString();
+			return;
+		}
+		setStage(job, "enrich", `AI 正在为 ${pending.length} 条缺少速读的候选补中文…`);
+		const result = await enrichItems(ctx, pending, {
 			date: job.date,
 			signal: job.controller.signal,
 			onProgress: (progress) => {
@@ -185,23 +193,28 @@ export function createPipeline({ ctx, store, config = {}, logger } = {}) {
 				job.message = `AI 正在补中文速读（${progress.done}/${progress.total} 批，已完成 ${progress.enriched} 条）`;
 			},
 		});
-		digest.items = result.items;
+		const updated = new Map(result.items.map((item) => [item.id, item]));
+		digest.items = allItems.map((item) => updated.get(item.id) ?? item);
+		const enrichedTotal = digest.items.filter((item) => item.finding && item.why_read).length;
+		const previousAnalysis = digest.analysis ?? {};
+		const warningWasEnrichment = typeof previousAnalysis.warning === "string" && previousAnalysis.warning.includes("速读批次");
 		digest.analysis = {
-			...(digest.analysis ?? {}),
+			...previousAnalysis,
+			warning: warningWasEnrichment ? result.warning : previousAnalysis.warning ?? null,
 			enrichmentError: result.warning,
 			enrichedAt: new Date().toISOString(),
 		};
 		digest.stats = {
 			...(digest.stats ?? {}),
-			candidates: result.items.length,
-			enriched: result.enriched,
+			candidates: digest.items.length,
+			enriched: enrichedTotal,
 		};
 		setStage(job, "saving", "保存中文速读…");
 		await store.saveDigest(digest);
 		job.digest = digest;
 		job.status = "done";
 		job.stage = "done";
-		job.message = `补全完成：${result.enriched}/${result.total} 条`;
+		job.message = `补全完成：${result.enriched}/${result.total} 条（总计 ${enrichedTotal}/${digest.items.length}）`;
 		job.finishedAt = new Date().toISOString();
 		logger?.info?.(`[signalforge] ${job.date} enrichment done`);
 	}

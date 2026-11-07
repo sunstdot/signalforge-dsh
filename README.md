@@ -10,9 +10,9 @@
 
 ## 它能做什么
 
-- **今日 AI 情报**：从 17 个来源抓候选，最多精选 5 条，每条写清「发现了什么 / 为什么值得看 / 依据与边界」，并保留原文链接。
+- **今日 AI 情报**：从 28 个来源抓候选，最多精选 5 条，每条写清「发现了什么 / 为什么值得看 / 依据与边界」，并保留原文链接。
 - **今日 AI 情报机会**：从当天信号出发，生成 3 个商业机会 + 3 个研发提效机会，包含触发点、产品形态、目标用户、MVP、风险或集成方式。
-- **全部情报**：111 条候选全部保留，每条都有中文速读，可按标题/来源/摘要搜索，按论文、仓库、模型、资讯、AI公司博客等分类筛选。
+- **全部情报**：当天抓到的全部候选都保留，每条都有中文速读，可按标题/来源/摘要搜索，按论文、仓库、模型、资讯、AI公司博客等分类筛选。
 - **继续对话**：每张卡片底部有「继续对话」，点击会把标题、链接、来源、中文速读、依据与关键信息填进一个新的 Harness 对话输入框，直接接着问。
 - **论文精读**：论文卡片多一个「精读论文」按钮；顶部还有一个折叠的「论文精读」面板，可以粘贴情报之外的 arXiv / DOI / PDF 链接或标题 + 摘要。
 - **按天保存**：每天一个 digest，日期下拉回看；没有信号的日期不出现。
@@ -54,7 +54,7 @@ dsh plugin --profile desktop add "github:sunstdot/signalforge-dsh"
 
 ```bash
 shasum -a 256 -c SHA256SUMS
-dsh plugin --profile desktop add "$PWD/dsh-signalforge-0.1.2.tgz"
+dsh plugin --profile desktop add "$PWD/dsh-signalforge-0.1.3.tgz"
 ```
 
 Linux 用 `sha256sum -c SHA256SUMS`。这种分发方式不依赖 npm，也不会在安装时执行构建。
@@ -82,7 +82,7 @@ dsh plugin --profile desktop add dsh-signalforge
 1. 左侧打开 **今日 AI 情报**。
 2. 点右上角 **获取今日资讯**。
 3. 等待约 **2–3 分钟**：
-   - 抓取 17 个来源；
+   - 抓取 28 个来源（其中 15 个官方博客）；
    - AI 精选最多 5 条信号；
    - 生成商业 + 研发机会；
    - 为全部候选写中文速读；
@@ -103,8 +103,10 @@ dsh plugin --profile desktop add dsh-signalforge
 | 社区 | Hacker News 热榜、Hacker News Algolia 近 48 小时搜索 |
 | 论文 | arXiv `cs.AI` / `cs.CL` / `cs.LG`、Hugging Face Daily Papers |
 | 开源 | GitHub Trending（AI 关键词过滤） |
-| 官方博客 | OpenAI News、Google DeepMind、Google AI、Hugging Face Blog |
+| 官方博客 | OpenAI、Google DeepMind、Google AI、Google Research、Hugging Face、Anthropic News、Anthropic Engineering、Cognition、Meta AI、NVIDIA Developer、Apple Machine Learning、LangChain、Cohere、Cloudflare AI、AWS Machine Learning |
 | 媒体 / Newsletter | The Decoder、TechCrunch AI、Latent Space、Smol AI News、Simon Willison、One Useful Thing、Import AI、Interconnects |
+
+官方博客使用 14 天窗口（其他来源 48 小时），避免 Anthropic、Cognition 这类周更博客在安静的一天直接消失。
 
 ## 分类
 
@@ -114,7 +116,7 @@ dsh plugin --profile desktop add dsh-signalforge
 - **仓库**：GitHub Trending
 - **模型**：模型来源（有对应内容时出现）
 - **资讯**：Hacker News、媒体、Newsletter、个人博客
-- **AI公司博客**：OpenAI、Google DeepMind、Google AI、Hugging Face Blog
+- **AI公司博客**：OpenAI、Google DeepMind、Google AI、Google Research、Hugging Face、Anthropic、Cognition、Meta AI、NVIDIA、Apple ML、LangChain、Cohere、Cloudflare、AWS ML
 - **微信公众号资讯**：微信公众号来源（有对应内容时出现）
 - **Smol 资讯**：Smol AI News
 - **投资者资讯**：投资者来源（有对应内容时出现）
@@ -172,7 +174,7 @@ node scripts/test-chat.mjs          # 继续对话：文章信息与 startSessio
 index.js                 Host：流水线、存储、/signalforge/api
 client.js                Web 客户端：侧栏面板与三个标签
 cordis.patch.yml         Bundle 默认配置
-src/sources.js           17 个来源、去重、排序、分类
+src/sources.js           28 个来源、HTML/RSS 采集、去重、排序、分类
 src/analyze.js           信号/机会提示词 + 批量中文速读
 src/paper-skill.js       paper-reading 技能：论文精读协议与输出契约
 src/pipeline.js          完整任务与只补速读任务
@@ -199,7 +201,7 @@ SignalForge brings daily AI intelligence into DeepSeek Harness. One click fetche
 - Every card has **Discuss with AI**, which opens a new Harness conversation with the title, URL, Chinese quick-read, evidence, and details already in the composer.
 - Paper cards add **Read paper**, which uses a registered `paper-reading` skill: classify the contribution, read out of order, separate assumptions, audit experiments, and decide adoption.
 - A collapsible **Paper reader** panel accepts manual arXiv/DOI/PDF links or a title + abstract for papers outside the digest.
-- 17 login-free sources; Chinese quick-reads; paper/repo/model/news/blog categories.
+- 28 login-free sources, including 15 official AI company blogs; Chinese quick-reads; paper/repo/model/news/blog categories.
 - One digest per day under `$DSH_HOME/signalforge`.
 
 Install from source:

@@ -436,7 +436,7 @@ function hasChinese(text) {
 	return /[\u4e00-\u9fff]/.test(String(text ?? ""));
 }
 
-export async function enrichItems(ctx, items, { signal, date = "今日", batchSize = 24, concurrency = 2, onProgress } = {}) {
+export async function enrichItems(ctx, items, { signal, date = "今日", batchSize = 18, concurrency = 2, onProgress } = {}) {
 	const list = Array.isArray(items) ? items : [];
 	if (list.length === 0) return { items: list, warning: null, enriched: 0, total: 0 };
 

@@ -142,20 +142,32 @@ export function formatDateTime(value, timeZone = "Asia/Shanghai") {
 	}
 }
 
-export async function fetchText(url, { timeoutMs = 15000, signal, accept = "*/*" } = {}) {
-	const timeout = AbortSignal.timeout(timeoutMs);
-	const combined = signal === undefined ? timeout : AbortSignal.any([signal, timeout]);
-	const response = await fetch(url, {
-		redirect: "follow",
-		signal: combined,
-		headers: {
-			"user-agent": "SignalForge/0.1 (+DeepSeek Harness plugin; daily AI intelligence)",
-			accept,
-			"accept-language": "zh-CN,zh;q=0.9,en;q=0.8",
-		},
-	});
-	if (!response.ok) throw new Error(`HTTP ${response.status}`);
-	return await response.text();
+export async function fetchText(url, { timeoutMs = 15000, signal, accept = "*/*", attempts = 2 } = {}) {
+	let lastError;
+	for (let attempt = 1; attempt <= Math.max(1, attempts); attempt += 1) {
+		const timeout = AbortSignal.timeout(timeoutMs);
+		const combined = signal === undefined ? timeout : AbortSignal.any([signal, timeout]);
+		try {
+			const response = await fetch(url, {
+				redirect: "follow",
+				signal: combined,
+				headers: {
+					"user-agent": "SignalForge/0.1 (+DeepSeek Harness plugin; daily AI intelligence)",
+					accept,
+					"accept-language": "zh-CN,zh;q=0.9,en;q=0.8",
+				},
+			});
+			if (!response.ok) throw new Error(`HTTP ${response.status}`);
+			return await response.text();
+		} catch (error) {
+			lastError = error;
+			if (signal?.aborted || attempt >= attempts) break;
+			const message = error instanceof Error ? error.message : String(error);
+			if (/^HTTP \d/.test(message) || error?.name === "TimeoutError") break;
+			await new Promise((resolve) => setTimeout(resolve, 350));
+		}
+	}
+	throw lastError;
 }
 
 export async function fetchJson(url, options = {}) {
