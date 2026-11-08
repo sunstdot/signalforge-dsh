@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.4 — 2026-11-08
+
+- Fixed `paper-reading` skill loading: runtime skills now declare the required `source` string.
+- Verified the skill loads through the Harness skill tool and returns the full paper-reading protocol.
+- No source-analysis or UI behavior changes.
+
 ## 0.1.3 — 2026-11-07
 
 - Expanded from 17 to **28 sources**, including 15 official AI company blogs.

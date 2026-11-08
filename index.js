@@ -63,6 +63,7 @@ export function apply(ctx, config = {}) {
 				name: PAPER_SKILL_NAME,
 				description: PAPER_SKILL_DESCRIPTION,
 				whenToUse: PAPER_SKILL_WHEN,
+				source: "signalforge",
 				content: PAPER_SKILL_CONTENT,
 			}),
 			"signalforge: paper reading skill",
