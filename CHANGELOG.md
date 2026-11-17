@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.3 — 2026-11-17
+
+- Fixed broken README images: `package.json` now includes `docs/screenshots/*.png`.
+- Added four real UI screenshots: 7-day funding report, AI新产品, all-intel, and the 继续对话 prefill.
+- Rewrote the README "界面速览" sections around those screenshots, including what each table/action does and how the conversation prefill works.
+
 ## 0.2.2 — 2026-11-17
 
 - Added launch materials: X / Xiaohongshu copy, 1600×900 X images, and 1242×1656 vertical images in `docs/launch/`.

@@ -1,6 +1,6 @@
 {
   "name": "dsh-signalforge",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "SignalForge for DeepSeek Harness: a 7-day AI funding intelligence report with source-linked tables, plus daily signals/opportunities and candidate quick-reads.",
   "type": "module",
   "license": "MIT",
@@ -47,7 +47,8 @@
     "scripts/*.sh",
     "docs/screenshots/*.webp",
     "docs/screenshots/*.jpg",
-    "docs/launch/*"
+    "docs/launch/*",
+    "docs/screenshots/*.png"
   ],
   "scripts": {
     "test": "node scripts/test-analyze.mjs && node scripts/test-enrich.mjs && node scripts/test-report.mjs",
