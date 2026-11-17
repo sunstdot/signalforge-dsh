@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.1 — 2026-11-17
+
+- Added an **AI新产品** category to 全部情报, backed by Product Hunt AI's daily feed.
+- Product Hunt cards are enriched with the same Chinese quick-reads as other candidates and show up under the new category chip.
+- Daily full refresh now preserves an existing 7-day funding report instead of dropping it when regenerating signals/opportunities.
+
 ## 0.2.0 — 2026-11-17
 
 - **Replaced the first tab's content** with a 7-day AI funding intelligence report: funding, new models, new products, and 3–5 trend signals.

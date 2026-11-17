@@ -12,7 +12,7 @@
 
 - **AI 投融资情报**：第一栏直接展示过去 7 天的重点投融资表、重要新模型表、值得关注的新产品表，以及 3–5 个趋势信号；每条都带来源链接，并区分已确认 / 传闻 / 洽谈中。
 - **今日 AI 情报机会**：从当天抓到的信号出发，生成商业机会和研发提效机会，包含触发点、产品形态、目标用户、MVP、风险或集成方式。
-- **全部情报**：当天抓到的全部候选都保留，每条都有中文速读，可按标题/来源/摘要搜索，按论文、仓库、模型、投融资、产品、资讯、AI公司博客等分类筛选。
+- **全部情报**：当天抓到的全部候选都保留，每条都有中文速读，可按标题/来源/摘要搜索，按论文、仓库、模型、投融资、AI新产品、资讯、AI公司博客等分类筛选。
 - **继续对话**：每张卡片底部有「继续对话」，点击会把标题、链接、来源、中文速读、依据与关键信息填进一个新的 Harness 对话输入框，直接接着问。
 - **论文精读**：论文卡片多一个「精读论文」按钮；顶部还有一个折叠的「论文精读」面板，可以粘贴情报之外的 arXiv / DOI / PDF 链接或标题 + 摘要。
 - **在对话里深挖**：投融资情报右上角的「在对话里深挖」会打开新对话，使用 `ai-weekly-report` 技能继续联网检索；适合对某笔融资、某个模型或某个趋势继续追问。
@@ -55,7 +55,7 @@ dsh plugin --profile desktop add "github:sunstdot/signalforge-dsh"
 
 ```bash
 shasum -a 256 -c SHA256SUMS
-dsh plugin --profile desktop add "$PWD/dsh-signalforge-0.2.0.tgz"
+dsh plugin --profile desktop add "$PWD/dsh-signalforge-0.2.1.tgz"
 ```
 
 Linux 用 `sha256sum -c SHA256SUMS`。这种分发方式不依赖 npm，也不会在安装时执行构建。
@@ -118,7 +118,7 @@ dsh plugin --profile desktop add dsh-signalforge
 - **仓库**：GitHub Trending
 - **模型**：模型来源（有对应内容时出现）
 - **投融资**：TechCrunch Funding 等融资来源
-- **产品**：Product Hunt AI 等产品来源
+- **AI新产品**：Product Hunt AI 的最新热榜产品
 - **资讯**：Hacker News、媒体、Newsletter、个人博客
 - **AI公司博客**：OpenAI、Google DeepMind、Google AI、Google Research、Hugging Face、Anthropic、Cognition、Meta AI、NVIDIA、Apple ML、LangChain、Cohere、Cloudflare、AWS ML
 - **微信公众号资讯**：微信公众号来源（有对应内容时出现）

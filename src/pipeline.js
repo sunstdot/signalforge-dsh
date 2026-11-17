@@ -153,6 +153,16 @@ export function createPipeline({ ctx, store, config = {}, logger } = {}) {
 			},
 		};
 
+		const previous = await store.loadDigest(date);
+		if (previous?.report) {
+			digest.report = previous.report;
+			digest.reportAt = previous.reportAt;
+			digest.analysis = {
+				...digest.analysis,
+				reportModel: previous.analysis?.reportModel,
+				reportAt: previous.analysis?.reportAt,
+			};
+		}
 		setStage(job, "saving", "保存今日情报…");
 		await store.saveDigest(digest);
 		job.digest = digest;

@@ -327,13 +327,13 @@ window.__ModuleLoader__.load({
 			return `${date} · ${names[new Date(time).getUTCDay()]}`;
 		}
 
-		const CATEGORY_ORDER = ["论文", "仓库", "模型", "投融资", "产品", "资讯", "AI公司博客", "微信公众号资讯", "Smol 资讯", "投资者资讯"];
+		const CATEGORY_ORDER = ["论文", "仓库", "模型", "投融资", "AI新产品", "资讯", "AI公司博客", "微信公众号资讯", "Smol 资讯", "投资者资讯"];
 		const CATEGORY_COLORS = {
 			"论文": "#6366f1",
 			"仓库": "#0ea5e9",
 			"模型": "#10b981",
 			"投融资": "#e11d48",
-			"产品": "#8b5cf6",
+			"AI新产品": "#8b5cf6",
 			"资讯": "#f59e0b",
 			"AI公司博客": "#06b6d4",
 			"微信公众号资讯": "#22c55e",

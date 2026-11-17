@@ -226,7 +226,7 @@ export function categoryOf(item) {
 	if (type === "repo" || type === "github") return "仓库";
 	if (type === "model") return "模型";
 	if (type === "funding") return "投融资";
-	if (type === "product") return "产品";
+	if (type === "product") return "AI新产品";
 	if (type === "wechat") return "微信公众号资讯";
 	if (type === "investor") return "投资者资讯";
 	if (type === "smolai" || source === "Smol AI News") return "Smol 资讯";
