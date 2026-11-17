@@ -66,7 +66,7 @@ async function handle(req, res, { pipeline, store, config }) {
 		const requested = url.searchParams.get("date");
 		const date = isDate(requested) ? requested : today;
 		const [digest, allDates] = await Promise.all([store.loadDigest(date), store.listDates()]);
-		const dates = allDates.filter((item) => (item.signals ?? 0) > 0 || (item.business ?? 0) > 0 || (item.rdev ?? 0) > 0);
+		const dates = allDates.filter((item) => (item.signals ?? 0) > 0 || (item.business ?? 0) > 0 || (item.rdev ?? 0) > 0 || (item.report ?? 0) > 0);
 		sendJson(res, 200, {
 			today,
 			date,
@@ -98,9 +98,13 @@ async function handle(req, res, { pipeline, store, config }) {
 		const body = await readJsonBody(req);
 		const today = pipeline.today();
 		const date = isDate(body?.date) ? body.date : today;
-		const mode = body?.mode === "enrich" ? "enrich" : "full";
+		const mode = body?.mode === "enrich" ? "enrich" : body?.mode === "report" ? "report" : "full";
 		try {
-			const result = mode === "enrich" ? await pipeline.startEnrich(date) : pipeline.start(date);
+			const result = mode === "enrich"
+				? await pipeline.startEnrich(date)
+				: mode === "report"
+					? await pipeline.startReport(date)
+					: pipeline.start(date);
 			sendJson(res, result.reused ? 200 : 202, result);
 		} catch (error) {
 			sendJson(res, 400, { error: error instanceof Error ? error.message : String(error) });

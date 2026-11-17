@@ -1,35 +1,35 @@
-# SignalForge · 今日 AI 情报
+# SignalForge · AI 投融资情报
 
-> 在 DeepSeek Harness 里点一次，抓取今天的 AI 资讯，用你当前登录的 DeepSeek 账号精选信号、生成商业与研发机会，并把所有候选写成中文速读。
+> 在 DeepSeek Harness 里生成过去 7 天的 AI 投融资情报：重点融资、新模型、新产品和趋势信号，每条都有参考链接。
 
 这是一个社区插件，不是 DeepSeek 官方项目。适配 DeepSeek Harness `0.2.1-rc.5` / `0.2.x`，无需额外 API Key。
 
 <p align="center">
-  <img src="docs/screenshots/signals.webp" alt="今日 AI 情报：精选信号卡片" width="860">
+  <img src="docs/screenshots/signals.webp" alt="AI 投融资情报：7 天报告" width="860">
 </p>
 
 ## 它能做什么
 
-- **今日 AI 情报**：从 28 个来源抓候选，最多精选 5 条，每条写清「发现了什么 / 为什么值得看 / 依据与边界」，并保留原文链接。
-- **今日 AI 情报机会**：从当天信号出发，生成 3 个商业机会 + 3 个研发提效机会，包含触发点、产品形态、目标用户、MVP、风险或集成方式。
-- **全部情报**：当天抓到的全部候选都保留，每条都有中文速读，可按标题/来源/摘要搜索，按论文、仓库、模型、资讯、AI公司博客等分类筛选。
+- **AI 投融资情报**：第一栏直接展示过去 7 天的重点投融资表、重要新模型表、值得关注的新产品表，以及 3–5 个趋势信号；每条都带来源链接，并区分已确认 / 传闻 / 洽谈中。
+- **今日 AI 情报机会**：从当天抓到的信号出发，生成商业机会和研发提效机会，包含触发点、产品形态、目标用户、MVP、风险或集成方式。
+- **全部情报**：当天抓到的全部候选都保留，每条都有中文速读，可按标题/来源/摘要搜索，按论文、仓库、模型、投融资、产品、资讯、AI公司博客等分类筛选。
 - **继续对话**：每张卡片底部有「继续对话」，点击会把标题、链接、来源、中文速读、依据与关键信息填进一个新的 Harness 对话输入框，直接接着问。
 - **论文精读**：论文卡片多一个「精读论文」按钮；顶部还有一个折叠的「论文精读」面板，可以粘贴情报之外的 arXiv / DOI / PDF 链接或标题 + 摘要。
-- **AI 周报**：顶部「AI 周报」按钮，用当前账号联网调研过去 7 天的 AI 投融资、新模型、新产品，并按三张表 + 3–5 个趋势信号输出；会自动区分已确认、传闻和洽谈中，且不把估值当融资金额。
-- **按天保存**：每天一个 digest，日期下拉回看；没有信号的日期不出现。
+- **在对话里深挖**：投融资情报右上角的「在对话里深挖」会打开新对话，使用 `ai-weekly-report` 技能继续联网检索；适合对某笔融资、某个模型或某个趋势继续追问。
+- **按天保存**：每天一个 digest，日期下拉回看；没有投融资情报或信号的日期不出现。
 - **用当前账号分析**：不配置 `.env`，不保存 API Key，直接走 Harness 当前默认模型（本机验证为 `deepseek-account / deepseek-flash`）。
 
 ## 界面
 
-### 今日 AI 情报
+### AI 投融资情报
 
-精选卡片：中文速读、五类标签、依据与边界、原文链接、可展开细节。
+第一栏是 7 天投融资报告：三张表 + 趋势信号；已确认、传闻、洽谈中分别标记，金额和估值分列，来源可点击。
 
-![今日 AI 情报精选信号](docs/screenshots/signals.webp)
+![AI 投融资情报](docs/screenshots/signals.webp)
 
 ### 全部情报
 
-111 条候选全部可见，未入选的也在里面；每张卡片右上角是分类标签，正文是中文「发现了什么 / 为什么值得看」。
+当天抓到的全部候选都在这里，未入选的也在里面；每张卡片右上角是分类标签，正文是中文「发现了什么 / 为什么值得看」。
 
 ![全部情报：全部候选与分类标签](docs/screenshots/all-intel.webp)
 
@@ -55,7 +55,7 @@ dsh plugin --profile desktop add "github:sunstdot/signalforge-dsh"
 
 ```bash
 shasum -a 256 -c SHA256SUMS
-dsh plugin --profile desktop add "$PWD/dsh-signalforge-0.1.5.tgz"
+dsh plugin --profile desktop add "$PWD/dsh-signalforge-0.2.0.tgz"
 ```
 
 Linux 用 `sha256sum -c SHA256SUMS`。这种分发方式不依赖 npm，也不会在安装时执行构建。
@@ -70,7 +70,7 @@ dsh plugin --profile desktop add dsh-signalforge
 
 ### 安装后
 
-`dsh plugin add` 会安装包、写入当前 profile，并自动选中 bundle。**刷新一次 Harness 页面**（或重启应用），左侧出现雷达图标 **今日 AI 情报**。
+`dsh plugin add` 会安装包、写入当前 profile，并自动选中 bundle。**刷新一次 Harness 页面**（或重启应用），左侧出现雷达图标 **AI 投融资情报**。
 
 如果 `dsh` 不在 `PATH` 里，用应用自带的启动器（macOS）：
 
@@ -80,19 +80,18 @@ dsh plugin --profile desktop add dsh-signalforge
 
 ## 使用
 
-1. 左侧打开 **今日 AI 情报**。
-2. 点右上角 **获取今日资讯**。
-3. 等待约 **2–3 分钟**：
-   - 抓取 28 个来源（其中 15 个官方博客）；
-   - AI 精选最多 5 条信号；
-   - 生成商业 + 研发机会；
-   - 为全部候选写中文速读；
-   - 保存当天结果。
-4. 在 **今日 AI 情报 / 今日 AI 情报机会 / 全部情报** 三个标签间切换。
-5. 想深挖某一条时，点卡片底部的 **继续对话**：会打开新对话，并把这条情报的标题、URL、来源、中文速读、依据和关键信息填进输入框。
-6. 想看投融资/新模型/新产品周报，点顶部 **AI 周报**；它会在新对话里用 web_search 调研过去 7 天，并按 `ai-weekly-report` 技能输出三张表和趋势信号。
+1. 左侧打开 **AI 投融资情报**。
+2. 点右上角 **AI 投融资**（或报告里的 **生成投融资情报**）。
+3. 等待约 **1–2 分钟**：
+   - 抓取过去 7 天的 32 个来源（含 15 个官方博客、TechCrunch Funding / Fundraising、Product Hunt AI）；
+   - AI 只根据候选材料整理投融资、模型、产品和趋势；
+   - 每条保留来源链接；
+   - 保存为当天 digest。
+4. 报告生成后，在 **AI 投融资情报 / 今日 AI 情报机会 / 全部情报** 三个标签间切换。
+5. 想继续追问某条融资/模型/趋势，点报告右上角 **在对话里深挖**；会打开新对话并加载 `ai-weekly-report` 技能。
+6. 如果还要跑当天的完整信号/机会/全部候选，点右上角 **重新获取今日资讯**；这条路径仍会抓 32 个来源并写全部中文速读。
 7. 读论文时，论文卡片底部点 **精读论文**；情报之外的论文，点页面上方的 **论文精读** 面板，粘贴链接/标题摘要即可。
-8. 用日期下拉回看历史。获取只对当天生效；历史日期只读。
+8. 用日期下拉回看历史。报告生成只对选中日期生效；历史日期可以按需重新生成报告。
 
 一次完整生成会调用多次当前账号的模型。面板会显示阶段和批次进度。对于只有英文摘要的历史日期，打开后点 **补全中文速读**，只会补速读，不重跑精选和机会，避免重复消耗 token。
 
@@ -106,9 +105,10 @@ dsh plugin --profile desktop add dsh-signalforge
 | 论文 | arXiv `cs.AI` / `cs.CL` / `cs.LG`、Hugging Face Daily Papers |
 | 开源 | GitHub Trending（AI 关键词过滤） |
 | 官方博客 | OpenAI、Google DeepMind、Google AI、Google Research、Hugging Face、Anthropic News、Anthropic Engineering、Cognition、Meta AI、NVIDIA Developer、Apple Machine Learning、LangChain、Cohere、Cloudflare AI、AWS Machine Learning |
-| 媒体 / Newsletter | The Decoder、TechCrunch AI、Latent Space、Smol AI News、Simon Willison、One Useful Thing、Import AI、Interconnects |
+| 投融资 / 产品 | TechCrunch Funding / Fundraising、Product Hunt AI |
+| 媒体 / Newsletter | The Decoder、TechCrunch AI、The Verge AI、Latent Space、Smol AI News、Simon Willison、One Useful Thing、Import AI、Interconnects |
 
-官方博客使用 14 天窗口（其他来源 48 小时），避免 Anthropic、Cognition 这类周更博客在安静的一天直接消失。
+官方博客使用 14 天窗口，投融资/产品源使用 7 天窗口，其他新闻/社区 48 小时；这样周更博客和融资事件不会在安静的一天直接消失。
 
 ## 分类
 
@@ -117,6 +117,8 @@ dsh plugin --profile desktop add dsh-signalforge
 - **论文**：arXiv、Hugging Face Daily Papers
 - **仓库**：GitHub Trending
 - **模型**：模型来源（有对应内容时出现）
+- **投融资**：TechCrunch Funding 等融资来源
+- **产品**：Product Hunt AI 等产品来源
 - **资讯**：Hacker News、媒体、Newsletter、个人博客
 - **AI公司博客**：OpenAI、Google DeepMind、Google AI、Google Research、Hugging Face、Anthropic、Cognition、Meta AI、NVIDIA、Apple ML、LangChain、Cohere、Cloudflare、AWS ML
 - **微信公众号资讯**：微信公众号来源（有对应内容时出现）
@@ -176,7 +178,7 @@ node scripts/test-chat.mjs          # 继续对话：文章信息与 startSessio
 index.js                 Host：流水线、存储、/signalforge/api
 client.js                Web 客户端：侧栏面板与三个标签
 cordis.patch.yml         Bundle 默认配置
-src/sources.js           28 个来源、HTML/RSS 采集、去重、排序、分类
+src/sources.js           32 个来源、HTML/RSS 采集、去重、排序、分类
 src/analyze.js           信号/机会提示词 + 批量中文速读
 src/paper-skill.js       paper-reading 技能：论文精读协议与输出契约
 src/pipeline.js          完整任务与只补速读任务
@@ -204,7 +206,7 @@ SignalForge brings daily AI intelligence into DeepSeek Harness. One click fetche
 - Paper cards add **Read paper**, which uses a registered `paper-reading` skill: classify the contribution, read out of order, separate assumptions, audit experiments, and decide adoption.
 - A collapsible **Paper reader** panel accepts manual arXiv/DOI/PDF links or a title + abstract for papers outside the digest.
 - **AI weekly** uses a registered `ai-weekly-report` skill and web search to research the last 7 days of funding, model releases, products, and trend signals.
-- 28 login-free sources, including 15 official AI company blogs; Chinese quick-reads; paper/repo/model/news/blog categories.
+- 32 login-free sources, including 15 official AI company blogs plus TechCrunch Funding and Product Hunt AI; a 7-day funding report with source links; paper/repo/model/funding/product/news categories.
 - One digest per day under `$DSH_HOME/signalforge`.
 
 Install from source:
@@ -213,7 +215,7 @@ Install from source:
 dsh plugin --profile desktop add "github:sunstdot/signalforge-dsh"
 ```
 
-Or download the `.tgz` from Releases. npm is optional. Refresh the Harness page after installation and open **今日 AI 情报** in the sidebar. See [PUBLISHING.md](PUBLISHING.md) for release details.
+Or download the `.tgz` from Releases. npm is optional. Refresh the Harness page after installation and open **AI 投融资情报** in the sidebar. See [PUBLISHING.md](PUBLISHING.md) for release details.
 
 ## License
 

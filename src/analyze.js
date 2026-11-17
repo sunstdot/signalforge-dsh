@@ -1,4 +1,4 @@
-import { categoryOf, truncate } from "./util.js";
+import { categoryOf, normalizeUrl, truncate } from "./util.js";
 
 const ALLOWED_TAGS = ["新能力新用法", "实践方法", "失败与限制", "对比与选择", "新问题与需求"];
 const EXECUTION_TYPES = new Set(["arxiv", "paper", "repo", "model", "blog"]);
@@ -22,6 +22,8 @@ function sourceTypeLabel(type) {
 		blog: "博客",
 		newsletter: "Newsletter",
 		news: "媒体",
+		funding: "融资",
+		product: "产品",
 	}[type] ?? type;
 }
 
@@ -503,6 +505,242 @@ export async function enrichItems(ctx, items, { signal, date = "今日", batchSi
 		? `${failures.length} 个速读批次失败，相关候选保留原始摘要：${failures[0]}`
 		: null;
 	return { items: merged, warning, enriched: collected.size, total: list.length };
+}
+
+const REPORT_SYSTEM = `你是 AI 投融资情报分析师，服务对象是一位独立开发者 / AI 产品人。你只根据给定的候选材料整理信息，不补充候选之外的事实，不编造金额、估值、公司、模型或产品。
+
+你的任务不是复述新闻，而是把过去 7 天的材料整理成可核对、可跟踪的投融资情报：融资表、模型表、产品表，以及 3–5 个真正有变化的趋势信号。宁缺毋滥，没有可靠材料的栏目就留空。`;
+
+function reportCandidateBlock(candidates) {
+	return candidates.map((candidate, index) => {
+		const published = candidate.published_at ? candidate.published_at.slice(0, 10) : "日期未知";
+		const summary = truncate(candidate.summary || "（无摘要）", 300);
+		return `[${index + 1}] ${candidate.title}
+来源：${candidate.source}（${sourceTypeLabel(candidate.source_type)}）· ${published}
+URL：${candidate.url}
+摘要：${summary}`;
+	}).join("\n\n");
+}
+
+function buildReportPrompt(candidates, start, end) {
+	return `# 时间范围
+
+${start} 至 ${end}（过去 7 天）
+
+# 候选材料（每条都带 URL）
+
+${reportCandidateBlock(candidates)}
+
+# 任务
+
+只根据上面的候选材料，整理一份 AI 投融资情报。候选之外的事实、金额、估值、模型、产品都不要写。
+
+1. **重点投融资**：日期、公司、融资金额、估值、方向、为什么值得关注、状态、来源。
+   - 融资金额和估值必须分列；未披露写「未披露」。
+   - 状态只能是「已确认」「传闻」「洽谈中」「未说明」。
+   - 不要把估值当融资金额。
+   - 只保留有明确来源的高信号条目，最多 12 条。
+2. **重要新模型**：日期、模型、方向、核心变化、来源。核心变化写具体能力/上下文/价格/速度/开放权重，最多 8 条。
+3. **值得关注的新产品**：日期、产品、做什么、为什么值得关注、来源。最多 8 条。
+4. **趋势信号**：3–5 条。每条包含判断、2–3 条本周证据（带日期和来源）、so what、反证/边界。
+
+# 硬性要求
+
+- 每一条的 source_url 必须从上面候选中逐字复制，不能编造、不能使用候选之外的链接。
+- 如果某个栏目没有足够可靠的条目，就返回空数组，不要凑数。
+- 不要输出 Markdown，只输出合法 JSON。
+- 所有字符串单行，不要换行。
+
+# 输出 JSON
+
+{
+  "funding": [
+    {
+      "date": "YYYY-MM-DD",
+      "company": "公司名",
+      "amount": "金额或未披露",
+      "valuation": "估值或未披露",
+      "sector": "方向",
+      "why": "为什么值得关注，具体、可核对",
+      "status": "已确认|传闻|洽谈中|未说明",
+      "source_url": "候选中的 URL"
+    }
+  ],
+  "models": [
+    {
+      "date": "YYYY-MM-DD",
+      "model": "模型名",
+      "direction": "方向",
+      "change": "核心变化",
+      "source_url": "候选中的 URL"
+    }
+  ],
+  "products": [
+    {
+      "date": "YYYY-MM-DD",
+      "product": "产品名",
+      "what": "做什么",
+      "why": "为什么值得关注",
+      "source_url": "候选中的 URL"
+    }
+  ],
+  "trends": [
+    {
+      "title": "趋势标题",
+      "judgment": "一句话判断",
+      "evidence": [
+        { "date": "YYYY-MM-DD", "text": "证据", "source_url": "候选中的 URL" }
+      ],
+      "so_what": "对独立开发者/产品人意味着什么",
+      "boundary": "反证或边界"
+    }
+  ]
+}`;
+}
+
+function cleanReportText(value, max) {
+	return truncate(String(value ?? "").replace(/\s+/g, " ").trim(), max);
+}
+
+function isReportDate(value, start, end) {
+	return /^\d{4}-\d{2}-\d{2}$/.test(value) && value >= start && value <= end;
+}
+
+function normalizeStatus(value) {
+	const status = cleanReportText(value, 20).toLowerCase();
+	if (/confirmed|已确认/.test(status)) return "已确认";
+	if (/rumor|rumour|传闻/.test(status)) return "传闻";
+	if (/negotiat|in talks|洽谈/.test(status)) return "洽谈中";
+	return "未说明";
+}
+
+export function normalizeReport(raw, candidates, { start, end } = {}) {
+	const startDate = start ?? "";
+	const endDate = end ?? "";
+	const byUrl = new Map();
+	for (const candidate of candidates) {
+		const url = normalizeUrl(candidate.url);
+		if (url) byUrl.set(url, candidate);
+	}
+	const sourceFor = (row) => {
+		if (!row || typeof row !== "object") return null;
+		const normalized = normalizeUrl(row.source_url ?? row.url ?? "");
+		let candidate = normalized ? byUrl.get(normalized) : undefined;
+		if (!candidate) {
+			const title = cleanReportText(row.source_title, 220);
+			if (title) candidate = candidates.find((item) => item.title === title);
+		}
+		if (!candidate) return null;
+		return {
+			url: candidate.url,
+			title: candidate.title,
+			source: candidate.source,
+			published_at: candidate.published_at ? candidate.published_at.slice(0, 10) : null,
+		};
+	};
+	const dateFor = (value, source) => {
+		const proposed = cleanReportText(value, 10);
+		if (isReportDate(proposed, startDate, endDate)) return proposed;
+		if (source?.published_at && isReportDate(source.published_at, startDate, endDate)) return source.published_at;
+		return endDate;
+	};
+	const data = raw && typeof raw === "object" ? raw : {};
+
+	const funding = (Array.isArray(data.funding) ? data.funding : []).flatMap((row) => {
+		if (!row || typeof row !== "object") return [];
+		const source = sourceFor(row);
+		const company = cleanReportText(row.company, 90);
+		if (!source || !company) return [];
+		return [{
+			date: dateFor(row.date, source),
+			company,
+			amount: cleanReportText(row.amount, 60) || "未披露",
+			valuation: cleanReportText(row.valuation, 60) || "未披露",
+			sector: cleanReportText(row.sector, 70) || "AI",
+			why: cleanReportText(row.why, 220),
+			status: normalizeStatus(row.status),
+			source,
+		}];
+	}).slice(0, 12);
+
+	const models = (Array.isArray(data.models) ? data.models : []).flatMap((row) => {
+		if (!row || typeof row !== "object") return [];
+		const source = sourceFor(row);
+		const model = cleanReportText(row.model, 90);
+		if (!source || !model) return [];
+		return [{
+			date: dateFor(row.date, source),
+			model,
+			direction: cleanReportText(row.direction, 70) || "AI",
+			change: cleanReportText(row.change, 220),
+			source,
+		}];
+	}).slice(0, 8);
+
+	const products = (Array.isArray(data.products) ? data.products : []).flatMap((row) => {
+		if (!row || typeof row !== "object") return [];
+		const source = sourceFor(row);
+		const product = cleanReportText(row.product, 90);
+		if (!source || !product) return [];
+		return [{
+			date: dateFor(row.date, source),
+			product,
+			what: cleanReportText(row.what, 220),
+			why: cleanReportText(row.why, 220),
+			source,
+		}];
+	}).slice(0, 8);
+
+	const trends = (Array.isArray(data.trends) ? data.trends : []).flatMap((row) => {
+		if (!row || typeof row !== "object") return [];
+		const title = cleanReportText(row.title, 100);
+		const judgment = cleanReportText(row.judgment, 220);
+		if (!title || !judgment) return [];
+		const evidence = (Array.isArray(row.evidence) ? row.evidence : []).flatMap((entry) => {
+			if (!entry || typeof entry !== "object") return [];
+			const source = sourceFor(entry);
+			const text = cleanReportText(entry.text, 180);
+			if (!source || !text) return [];
+			return [{ date: dateFor(entry.date, source), text, source }];
+		}).slice(0, 3);
+		if (evidence.length === 0) return [];
+		return [{
+			title,
+			judgment,
+			evidence,
+			so_what: cleanReportText(row.so_what, 240),
+			boundary: cleanReportText(row.boundary, 220),
+		}];
+	}).slice(0, 5);
+
+	return {
+		period: { start: startDate, end: endDate, days: 7 },
+		funding,
+		models,
+		products,
+		trends,
+	};
+}
+
+export async function analyzeWeeklyReport(ctx, candidates, { date, start, end, signal } = {}) {
+	const startDate = start ?? date;
+	const endDate = end ?? date;
+	const prompt = buildReportPrompt(candidates, startDate, endDate);
+	const result = await callJson(ctx, {
+		system: REPORT_SYSTEM,
+		prompt,
+		maxTokens: 8000,
+		signal,
+	});
+	const report = normalizeReport(result.json, candidates, { start: startDate, end: endDate });
+	return {
+		report: {
+			...report,
+			generatedAt: new Date().toISOString(),
+		},
+		provider: result.provider,
+		model: result.model,
+	};
 }
 
 export { ENRICH_SYSTEM };

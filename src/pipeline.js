@@ -1,4 +1,4 @@
-import { analyzeOpportunities, analyzeSignals, enrichItems } from "./analyze.js";
+import { analyzeOpportunities, analyzeSignals, analyzeWeeklyReport, enrichItems } from "./analyze.js";
 import { collectCandidates } from "./sources.js";
 import { addDays, isDate, todayInZone } from "./util.js";
 
@@ -219,6 +219,107 @@ export function createPipeline({ ctx, store, config = {}, logger } = {}) {
 		logger?.info?.(`[signalforge] ${job.date} enrichment done`);
 	}
 
+	async function runReport(job) {
+		const date = job.date;
+		const start = addDays(date, -6);
+		setStage(job, "sources", "抓取过去 7 天的投融资、模型和产品来源…");
+		const collection = await collectCandidates({
+			lookbackHours: 168,
+			timeoutMs: sourceTimeoutMs,
+			signal: job.controller.signal,
+			onProgress: (progress) => {
+				job.progress.sourceDone = progress.done;
+				job.progress.sourceTotal = progress.total;
+				job.message = progress.source === "开始抓取"
+					? `准备抓取 ${progress.total} 个来源…`
+					: `抓取 ${progress.source}（${progress.done}/${progress.total}）`;
+			},
+		});
+		job.progress.candidates = collection.allCount;
+		job.progress.selected = collection.candidates.length;
+		if (collection.candidates.length === 0) throw new Error("过去 7 天没有抓到可用候选");
+		const okSources = collection.stats.filter((item) => item.ok).length;
+		setStage(job, "report", `已从 ${okSources} 个来源抓到 ${collection.allCount} 条候选，AI 正在整理投融资情报…`);
+		const result = await analyzeWeeklyReport(ctx, collection.candidates, {
+			date,
+			start,
+			end: date,
+			signal: job.controller.signal,
+		});
+		const report = result.report;
+		const reportRows = report.funding.length + report.models.length + report.products.length + report.trends.length;
+		job.progress.reportRows = reportRows;
+		const existing = await store.loadDigest(date);
+		const digest = existing ?? {
+			date,
+			generatedAt: new Date().toISOString(),
+			items: [],
+			signals: [],
+			opportunities: { business: [], rdev: [] },
+			analysis: {},
+			stats: {},
+		};
+		digest.report = report;
+		digest.reportAt = report.generatedAt;
+		digest.analysis = {
+			...(digest.analysis ?? {}),
+			reportModel: result.model,
+			reportAt: report.generatedAt,
+			reportError: null,
+		};
+		digest.stats = {
+			...(digest.stats ?? {}),
+			sources: collection.stats,
+			okSources,
+			sourceTotal: collection.stats.length,
+			reportCandidates: collection.allCount,
+			reportRows,
+		};
+		setStage(job, "saving", "保存投融资情报…");
+		await store.saveDigest(digest);
+		job.digest = digest;
+		job.status = "done";
+		job.stage = "done";
+		job.message = `完成：投融资 ${report.funding.length} 条、模型 ${report.models.length} 条、产品 ${report.products.length} 条、趋势 ${report.trends.length} 条`;
+		job.finishedAt = new Date().toISOString();
+		logger?.info?.(`[signalforge] ${date} report done`);
+	}
+
+	async function startReport(date) {
+		if (disposed) throw new Error("插件已卸载");
+		if (!isDate(date)) throw new Error("日期格式必须是 YYYY-MM-DD");
+		if (active && active.status === "running") {
+			return { job: publicJob(active), reused: true };
+		}
+		const job = {
+			id: `job-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`,
+			date,
+			mode: "report",
+			status: "running",
+			stage: "sources",
+			message: "准备抓取过去 7 天的来源…",
+			startedAt: new Date().toISOString(),
+			finishedAt: null,
+			error: null,
+			progress: {
+				sourceDone: 0,
+				sourceTotal: 0,
+				candidates: 0,
+				selected: 0,
+				signals: 0,
+				opportunities: 0,
+				enrichTotal: 0,
+				enriched: 0,
+				reportRows: 0,
+			},
+			digest: null,
+			controller: new AbortController(),
+		};
+		active = job;
+		job.promise = runReport(job).catch((error) => fail(job, error));
+		return { job: publicJob(job), reused: false };
+	}
+
 	async function startEnrich(date) {
 		if (disposed) throw new Error("插件已卸载");
 		if (!isDate(date)) throw new Error("日期格式必须是 YYYY-MM-DD");
@@ -319,6 +420,7 @@ export function createPipeline({ ctx, store, config = {}, logger } = {}) {
 	return {
 		start,
 		startEnrich,
+		startReport,
 		get,
 		current,
 		cancel,

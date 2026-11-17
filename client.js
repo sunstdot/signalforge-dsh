@@ -14,8 +14,8 @@ window.__ModuleLoader__.load({
 
 		const ZH = {
 			panel: "今日 AI 情报",
-			title: "今日 AI 情报",
-			subtitle: "从今天的 AI 资讯里精选信号，并用当前账号挖出可以落地的商业与研发机会。",
+			title: "AI 投融资情报",
+			subtitle: "过去 7 天的 AI 投融资、模型、产品与趋势，用当前账号分析，并保留参考链接。",
 			fetch: "获取今日资讯",
 			regenerate: "重新获取今日资讯",
 			refreshing: "正在获取…",
@@ -23,9 +23,44 @@ window.__ModuleLoader__.load({
 			backToday: "回到今天",
 			prevDay: "更早的日期",
 			nextDay: "更新的日期",
-			tabSignals: "今日 AI 情报",
+			tabSignals: "AI投融资情报",
 			tabOpps: "今日 AI 情报机会",
 			tabAll: "全部情报",
+			reportTitle: "AI 投融资情报",
+			reportHint: "过去 7 天的重点投融资、新模型、新产品和趋势信号。每条保留参考链接。",
+			reportGenerate: "生成投融资情报",
+			reportRegenerate: "重新生成",
+			reportRegenerating: "正在生成…",
+			reportEmptyTitle: "还没有投融资情报",
+			reportEmptyHint: "抓取过去 7 天的融资、新模型、新产品和趋势，通常需要 1–2 分钟。",
+			reportPeriod: "统计区间",
+			reportGenerated: "生成时间",
+			reportDeepDive: "在对话里深挖",
+			reportFunding: "重点投融资",
+			reportModels: "重要新模型",
+			reportProducts: "值得关注的新产品",
+			reportTrends: "趋势信号",
+			reportNoFunding: "本期没有足够可靠的融资条目。",
+			reportNoModels: "本期没有足够可靠的新模型条目。",
+			reportNoProducts: "本期没有足够可靠的新产品条目。",
+			reportNoTrends: "本期证据不足以提炼趋势。",
+			reportDate: "日期",
+			reportCompany: "公司",
+			reportAmount: "融资金额",
+			reportValuation: "估值",
+			reportSector: "方向",
+			reportWhy: "为什么值得关注",
+			reportStatus: "状态",
+			reportSource: "来源",
+			reportModel: "模型",
+			reportDirection: "方向",
+			reportChange: "核心变化",
+			reportProduct: "产品",
+			reportWhat: "做什么",
+			reportEvidence: "证据",
+			reportSoWhat: "so what",
+			reportBoundary: "反证 / 边界",
+			reportRows: "条",
 			signalsUnit: "条信号",
 			oppsUnit: "个机会",
 			itemsUnit: "条",
@@ -68,8 +103,8 @@ window.__ModuleLoader__.load({
 			paperPlaceholder: "粘贴 arXiv / DOI / PDF 链接，或标题 + 摘要…",
 			paperStart: "开始精读",
 			paperStarting: "准备中…",
-			weeklyReport: "AI 周报",
-			weeklyHint: "用当前账号联网调研过去 7 天的投融资、新模型、新产品和趋势",
+			weeklyReport: "AI 投融资",
+			weeklyHint: "用当前账号分析过去 7 天的投融资、新模型、新产品和趋势",
 			chatCopied: "文章信息已复制，去对话里粘贴即可继续。",
 			chatUnavailable: "当前 Harness 组合没有可用的对话服务，无法打开新对话。",
 			showDetails: "展开细节",
@@ -117,14 +152,15 @@ window.__ModuleLoader__.load({
 			noDates: "还没有历史",
 			jobRunning: "正在生成今日情报",
 			statsLine: "精选 {signals} 条（不凑数）· 候选 {candidates} 条 · {sources} 个来源已抓取",
+			reportStatsLine: "过去 7 天 · {rows} 条情报 · {sources} 个来源",
 			dateLabel: "日期",
 			todayLabel: "今天",
 		};
 
 		const EN = {
 			panel: "Daily AI Brief",
-			title: "Daily AI Brief",
-			subtitle: "Pick today's AI signals and turn them into buildable business and engineering opportunities with your current account.",
+			title: "AI funding intelligence",
+			subtitle: "The last 7 days of AI funding, models, products, and trend signals, analyzed with the current account and linked to sources.",
 			fetch: "Get today's brief",
 			regenerate: "Regenerate today's brief",
 			refreshing: "Fetching…",
@@ -132,9 +168,44 @@ window.__ModuleLoader__.load({
 			backToday: "Back to today",
 			prevDay: "Older date",
 			nextDay: "Newer date",
-			tabSignals: "Signals",
+			tabSignals: "AI funding intel",
 			tabOpps: "Opportunities",
 			tabAll: "All intel",
+			reportTitle: "AI funding intelligence",
+			reportHint: "Notable funding, model releases, new products, and trend signals from the last 7 days, each with a source link.",
+			reportGenerate: "Generate funding intel",
+			reportRegenerate: "Regenerate",
+			reportRegenerating: "Generating…",
+			reportEmptyTitle: "No funding intel yet",
+			reportEmptyHint: "Fetch the last 7 days of funding, models, products, and trends. Usually takes 1–2 minutes.",
+			reportPeriod: "Period",
+			reportGenerated: "Generated",
+			reportDeepDive: "Deep dive in chat",
+			reportFunding: "Funding",
+			reportModels: "New models",
+			reportProducts: "New products",
+			reportTrends: "Trend signals",
+			reportNoFunding: "No sufficiently reliable funding entries this period.",
+			reportNoModels: "No sufficiently reliable model entries this period.",
+			reportNoProducts: "No sufficiently reliable product entries this period.",
+			reportNoTrends: "Not enough evidence for trend signals this period.",
+			reportDate: "Date",
+			reportCompany: "Company",
+			reportAmount: "Amount",
+			reportValuation: "Valuation",
+			reportSector: "Sector",
+			reportWhy: "Why it matters",
+			reportStatus: "Status",
+			reportSource: "Source",
+			reportModel: "Model",
+			reportDirection: "Direction",
+			reportChange: "What changed",
+			reportProduct: "Product",
+			reportWhat: "What it does",
+			reportEvidence: "Evidence",
+			reportSoWhat: "So what",
+			reportBoundary: "Boundary",
+			reportRows: "items",
 			signalsUnit: "signals",
 			oppsUnit: "opportunities",
 			itemsUnit: "items",
@@ -177,8 +248,8 @@ window.__ModuleLoader__.load({
 			paperPlaceholder: "Paste an arXiv / DOI / PDF link, or a title + abstract…",
 			paperStart: "Start reading",
 			paperStarting: "Preparing…",
-			weeklyReport: "AI weekly",
-			weeklyHint: "Research the last 7 days of AI funding, model releases, products, and trends with the current account",
+			weeklyReport: "AI funding",
+			weeklyHint: "Analyze the last 7 days of AI funding, model releases, products, and trends with the current account",
 			chatCopied: "Article details copied — paste them into a conversation to continue.",
 			chatUnavailable: "This Harness composition has no conversation service to open a new chat.",
 			showDetails: "Show details",
@@ -226,6 +297,7 @@ window.__ModuleLoader__.load({
 			noDates: "No history yet",
 			jobRunning: "Generating today's brief",
 			statsLine: "{signals} signals (no filler) · {candidates} candidates · {sources} sources fetched",
+			reportStatsLine: "Last 7 days · {rows} intel items · {sources} sources",
 			dateLabel: "Date",
 			todayLabel: "Today",
 		};
@@ -255,11 +327,13 @@ window.__ModuleLoader__.load({
 			return `${date} · ${names[new Date(time).getUTCDay()]}`;
 		}
 
-		const CATEGORY_ORDER = ["论文", "仓库", "模型", "资讯", "AI公司博客", "微信公众号资讯", "Smol 资讯", "投资者资讯"];
+		const CATEGORY_ORDER = ["论文", "仓库", "模型", "投融资", "产品", "资讯", "AI公司博客", "微信公众号资讯", "Smol 资讯", "投资者资讯"];
 		const CATEGORY_COLORS = {
 			"论文": "#6366f1",
 			"仓库": "#0ea5e9",
 			"模型": "#10b981",
+			"投融资": "#e11d48",
+			"产品": "#8b5cf6",
 			"资讯": "#f59e0b",
 			"AI公司博客": "#06b6d4",
 			"微信公众号资讯": "#22c55e",
@@ -482,6 +556,48 @@ window.__ModuleLoader__.load({
 			".sf-inner{width:min(880px,100%);margin:0 auto;padding:34px 30px 88px;box-sizing:border-box}",
 			".sf-head{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;flex-wrap:wrap}",
 			".sf-headActions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}",
+			".sf-report{display:flex;flex-direction:column;margin-top:2px}",
+			".sf-reportHead{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-bottom:14px}",
+			".sf-reportHeadText{min-width:0;flex:1}",
+			".sf-reportKicker{font-size:10px;letter-spacing:.16em;color:var(--dsw-alias-label-tertiary);margin-bottom:6px}",
+			".sf-reportHeadText h2{font-size:24px;line-height:32px;margin:0 0 7px;color:var(--dsw-alias-label-primary);font-weight:600}",
+			".sf-reportHeadText p{font-size:14px;line-height:22px;margin:0;max-width:640px;color:var(--dsw-alias-label-secondary)}",
+			".sf-reportActions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;flex:none}",
+			".sf-reportMeta{display:flex;align-items:center;gap:18px;flex-wrap:wrap;padding:11px 0 2px;border-top:.5px solid var(--dsw-alias-border-l1);font-size:12px;color:var(--dsw-alias-label-tertiary)}",
+			".sf-reportSection{margin-top:24px}",
+			".sf-reportSectionHead{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:10px}",
+			".sf-reportSectionHead h3{font-size:16px;line-height:24px;margin:0;color:var(--dsw-alias-label-primary);font-weight:600}",
+			".sf-reportCount{font-size:11px;color:var(--dsw-alias-label-tertiary);white-space:nowrap}",
+			".sf-tableWrap{overflow-x:auto;border:.5px solid var(--dsw-alias-border-l2);border-radius:10px;background:var(--dsw-alias-bg-layer-1)}",
+			".sf-table{width:100%;border-collapse:collapse;min-width:780px;font-size:13px;line-height:20px}",
+			".sf-table th{text-align:left;font-size:11.5px;font-weight:550;color:var(--dsw-alias-label-tertiary);background:color-mix(in srgb,var(--dsw-alias-label-primary) 3%,transparent);padding:9px 12px;border-bottom:.5px solid var(--dsw-alias-border-l2);white-space:nowrap}",
+			".sf-table td{padding:11px 12px;border-bottom:.5px solid var(--dsw-alias-border-l1);vertical-align:top;color:var(--dsw-alias-label-secondary)}",
+			".sf-table tbody tr:last-child td{border-bottom:none}",
+			".sf-table strong{color:var(--dsw-alias-label-primary);font-weight:550}",
+			".sf-cellWide{min-width:190px}",
+			".sf-nowrap{white-space:nowrap}",
+			".sf-sourceLink{color:var(--dsw-alias-brand-text);text-decoration:none;font-size:12px;white-space:nowrap}",
+			".sf-sourceLink:hover{text-decoration:underline}",
+			".sf-sourceMuted{font-size:12px;color:var(--dsw-alias-label-tertiary)}",
+			".sf-status{display:inline-flex;align-items:center;white-space:nowrap;padding:2px 7px;border-radius:999px;font-size:11px;line-height:16px;background:color-mix(in srgb,var(--dsw-alias-label-primary) 7%,transparent);color:var(--dsw-alias-label-secondary)}",
+			".sf-status[data-status=\"已确认\"]{background:color-mix(in srgb,#16a34a 12%,transparent);color:#16803c}",
+			".sf-status[data-status=\"传闻\"]{background:color-mix(in srgb,#f59e0b 14%,transparent);color:#a15c00}",
+			".sf-status[data-status=\"洽谈中\"]{background:color-mix(in srgb,#3b82f6 12%,transparent);color:#1d5fbf}",
+			".sf-reportEmptyLine{font-size:13px;line-height:21px;color:var(--dsw-alias-label-tertiary);margin:0;padding:12px 14px;border:.5px dashed var(--dsw-alias-border-l2);border-radius:9px}",
+			".sf-trendList{display:flex;flex-direction:column;gap:12px}",
+			".sf-trendCard{border:.5px solid var(--dsw-alias-border-l2);border-radius:10px;padding:15px 18px;background:var(--dsw-alias-bg-layer-1)}",
+			".sf-trendTitle{display:flex;align-items:baseline;gap:10px}",
+			".sf-trendNum{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;color:var(--dsw-alias-brand-text);flex:none}",
+			".sf-trendTitle h4{font-size:15px;line-height:23px;margin:0;color:var(--dsw-alias-label-primary);font-weight:600}",
+			".sf-trendJudgment{font-size:14px;line-height:23px;color:var(--dsw-alias-label-primary);margin:9px 0 0}",
+			".sf-trendEvidence{display:flex;flex-direction:column;gap:6px;margin-top:11px;padding-top:10px;border-top:.5px solid var(--dsw-alias-border-l1)}",
+			".sf-trendEvidenceRow{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;font-size:12.5px;line-height:19px}",
+			".sf-trendDate{font-size:11px;color:var(--dsw-alias-label-tertiary);flex:none}",
+			".sf-trendText{flex:1;min-width:180px;color:var(--dsw-alias-label-secondary)}",
+			".sf-trendNotes{margin-top:10px;padding-top:9px;border-top:.5px solid var(--dsw-alias-border-l1);font-size:12.5px;line-height:20px;color:var(--dsw-alias-label-secondary)}",
+			".sf-trendNotes p{margin:4px 0}",
+			".sf-reportEmpty .sf-primary{margin-top:10px}",
+
 			".sf-eyebrow{font-size:11px;line-height:16px;letter-spacing:.12em;color:var(--dsw-alias-label-tertiary);font-weight:600}",
 			".sf-titleRow{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:6px}",
 			".sf-title{margin:0;font-size:28px;line-height:36px;font-weight:640;letter-spacing:-.012em}",
@@ -613,7 +729,7 @@ window.__ModuleLoader__.load({
 			"@keyframes sf-spin{to{transform:rotate(360deg)}}",
 			"@keyframes sf-shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}",
 			"@keyframes sf-fade{from{opacity:0;transform:translateY(2px)}to{opacity:1;transform:none}}",
-			"@media (max-width:820px){.sf-inner{padding:24px 16px 60px}.sf-title{font-size:22px;line-height:30px}.sf-head{gap:14px}.sf-oppGrid{grid-template-columns:minmax(0,1fr)}.sf-toolbar{align-items:flex-start;flex-direction:column}.sf-tabs{width:100%;overflow:auto}.sf-dateSelect{font-size:16px}.sf-card{padding:18px 16px 15px;border-radius:11px}.sf-cardTitle{font-size:16.5px;line-height:24px}.sf-line{font-size:14px;line-height:23px}.sf-evidence{font-size:12.5px;line-height:20px}.sf-cat{font-size:11px;line-height:19px}.sf-list{gap:14px}.sf-paperBody{flex-direction:column;align-items:stretch}.sf-paperStart{width:100%}.sf-paperSummaryHint{display:none}}",
+			"@media (max-width:820px){.sf-inner{padding:24px 16px 60px}.sf-title{font-size:22px;line-height:30px}.sf-head{gap:14px}.sf-oppGrid{grid-template-columns:minmax(0,1fr)}.sf-toolbar{align-items:flex-start;flex-direction:column}.sf-tabs{width:100%;overflow:auto}.sf-dateSelect{font-size:16px}.sf-card{padding:18px 16px 15px;border-radius:11px}.sf-cardTitle{font-size:16.5px;line-height:24px}.sf-line{font-size:14px;line-height:23px}.sf-evidence{font-size:12.5px;line-height:20px}.sf-cat{font-size:11px;line-height:19px}.sf-list{gap:14px}.sf-paperBody{flex-direction:column;align-items:stretch}.sf-paperStart{width:100%}.sf-paperSummaryHint{display:none}.sf-reportHead{flex-direction:column}.sf-reportActions{width:100%}.sf-reportActions .sf-btn,.sf-reportActions .sf-primary{flex:1}.sf-reportHeadText h2{font-size:20px;line-height:28px}}",
 			"@media (prefers-reduced-motion:reduce){.sf-spinner,.sf-skeleton{animation:none}.sf-fadeIn{animation:none}}",
 		].join("");
 
@@ -1004,6 +1120,258 @@ window.__ModuleLoader__.load({
 			);
 		}
 
+		function reportRowCount(report) {
+			if (!report) return 0;
+			return (report.funding?.length ?? 0) + (report.models?.length ?? 0) + (report.products?.length ?? 0) + (report.trends?.length ?? 0);
+		}
+
+		function ReportSourceLink({ source, t }) {
+			if (!source?.url) return h("span", { className: "sf-sourceMuted" }, t("reportSource"));
+			return h(
+				"a",
+				{
+					className: "sf-sourceLink",
+					href: source.url,
+					target: "_blank",
+					rel: "noreferrer",
+					title: source.title || source.url,
+				},
+				source.source || t("reportSource"),
+				" ↗",
+			);
+		}
+
+		function ReportSection({ title, count, t, empty, children }) {
+			return h(
+				"section",
+				{ className: "sf-reportSection" },
+				h(
+					"div",
+					{ className: "sf-reportSectionHead" },
+					h("h3", null, title),
+					h("span", { className: "sf-reportCount" }, `${count} ${t("reportRows")}`),
+				),
+				count === 0 ? h("p", { className: "sf-reportEmptyLine" }, empty) : children,
+			);
+		}
+
+		function ReportView({ report, t, onGenerate, onDeepDive, running }) {
+			if (!report) {
+				return h(
+					"div",
+					{ className: "sf-empty sf-reportEmpty" },
+					h("div", { className: "sf-emptyIcon" }, h(IconReport, { size: 54 })),
+					h("div", { className: "sf-emptyTitle" }, t("reportEmptyTitle")),
+					h("p", { className: "sf-emptyHint" }, t("reportEmptyHint")),
+					h(
+						"button",
+						{ type: "button", className: "sf-primary", onClick: onGenerate, disabled: running },
+						h(IconReport, { size: 14 }),
+						running ? t("reportRegenerating") : t("reportGenerate"),
+					),
+				);
+			}
+			const funding = Array.isArray(report.funding) ? report.funding : [];
+			const models = Array.isArray(report.models) ? report.models : [];
+			const products = Array.isArray(report.products) ? report.products : [];
+			const trends = Array.isArray(report.trends) ? report.trends : [];
+			const period = report.period ?? {};
+			const generated = report.generatedAt ? formatTime(report.generatedAt) : "";
+			return h(
+				"section",
+				{ className: "sf-report", "aria-label": t("reportTitle") },
+				h(
+					"div",
+					{ className: "sf-reportHead" },
+					h(
+						"div",
+						{ className: "sf-reportHeadText" },
+						h("div", { className: "sf-reportKicker" }, "SIGNALFORGE · 7 DAYS"),
+						h("h2", null, t("reportTitle")),
+						h("p", null, t("reportHint")),
+					),
+					h(
+						"div",
+						{ className: "sf-reportActions" },
+						typeof onDeepDive === "function" && h(
+							"button",
+							{ type: "button", className: "sf-btn", onClick: onDeepDive, disabled: running },
+							h(IconMessage, { size: 14 }),
+							t("reportDeepDive"),
+						),
+						h(
+							"button",
+							{ type: "button", className: "sf-primary", onClick: onGenerate, disabled: running },
+							h(IconRefresh, { size: 14 }),
+							running ? t("reportRegenerating") : t("reportRegenerate"),
+						),
+					),
+				),
+				h(
+					"div",
+					{ className: "sf-reportMeta" },
+					h("span", null, `${t("reportPeriod")}：${period.start ?? "?"} ~ ${period.end ?? "?"}`),
+					generated ? h("span", null, `${t("reportGenerated")}：${generated}`) : null,
+				),
+				h(
+					ReportSection,
+					{ title: t("reportFunding"), count: funding.length, t, empty: t("reportNoFunding") },
+					h(
+						"div",
+						{ className: "sf-tableWrap" },
+						h(
+							"table",
+							{ className: "sf-table" },
+							h(
+								"thead",
+								null,
+								h(
+									"tr",
+									null,
+									h("th", null, t("reportDate")),
+									h("th", null, t("reportCompany")),
+									h("th", null, t("reportAmount")),
+									h("th", null, t("reportValuation")),
+									h("th", null, t("reportSector")),
+									h("th", null, t("reportWhy")),
+									h("th", null, t("reportStatus")),
+									h("th", null, t("reportSource")),
+								),
+							),
+							h(
+								"tbody",
+								null,
+								funding.map((row, index) => h(
+									"tr",
+									{ key: `${row.company}-${row.date}-${index}` },
+									h("td", { className: "sf-nowrap" }, row.date),
+									h("td", null, h("strong", null, row.company)),
+									h("td", null, row.amount),
+									h("td", null, row.valuation),
+									h("td", null, row.sector),
+									h("td", { className: "sf-cellWide" }, row.why),
+									h("td", null, h("span", { className: "sf-status", "data-status": row.status }, row.status)),
+									h("td", null, h(ReportSourceLink, { source: row.source, t })),
+								)),
+							),
+						),
+					),
+				),
+				h(
+					ReportSection,
+					{ title: t("reportModels"), count: models.length, t, empty: t("reportNoModels") },
+					h(
+						"div",
+						{ className: "sf-tableWrap" },
+						h(
+							"table",
+							{ className: "sf-table" },
+							h(
+								"thead",
+								null,
+								h(
+									"tr",
+									null,
+									h("th", null, t("reportDate")),
+									h("th", null, t("reportModel")),
+									h("th", null, t("reportDirection")),
+									h("th", null, t("reportChange")),
+									h("th", null, t("reportSource")),
+								),
+							),
+							h(
+								"tbody",
+								null,
+								models.map((row, index) => h(
+									"tr",
+									{ key: `${row.model}-${row.date}-${index}` },
+									h("td", { className: "sf-nowrap" }, row.date),
+									h("td", null, h("strong", null, row.model)),
+									h("td", null, row.direction),
+									h("td", { className: "sf-cellWide" }, row.change),
+									h("td", null, h(ReportSourceLink, { source: row.source, t })),
+								)),
+							),
+						),
+					),
+				),
+				h(
+					ReportSection,
+					{ title: t("reportProducts"), count: products.length, t, empty: t("reportNoProducts") },
+					h(
+						"div",
+						{ className: "sf-tableWrap" },
+						h(
+							"table",
+							{ className: "sf-table" },
+							h(
+								"thead",
+								null,
+								h(
+									"tr",
+									null,
+									h("th", null, t("reportDate")),
+									h("th", null, t("reportProduct")),
+									h("th", null, t("reportWhat")),
+									h("th", null, t("reportWhy")),
+									h("th", null, t("reportSource")),
+								),
+							),
+							h(
+								"tbody",
+								null,
+								products.map((row, index) => h(
+									"tr",
+									{ key: `${row.product}-${row.date}-${index}` },
+									h("td", { className: "sf-nowrap" }, row.date),
+									h("td", null, h("strong", null, row.product)),
+									h("td", { className: "sf-cellWide" }, row.what),
+									h("td", { className: "sf-cellWide" }, row.why),
+									h("td", null, h(ReportSourceLink, { source: row.source, t })),
+								)),
+							),
+						),
+					),
+				),
+				h(
+					ReportSection,
+					{ title: t("reportTrends"), count: trends.length, t, empty: t("reportNoTrends") },
+					h(
+						"div",
+						{ className: "sf-trendList" },
+						trends.map((trend, index) => h(
+							"article",
+							{ className: "sf-trendCard", key: `${trend.title}-${index}` },
+							h(
+								"div",
+								{ className: "sf-trendTitle" },
+								h("span", { className: "sf-trendNum" }, String(index + 1).padStart(2, "0")),
+								h("h4", null, trend.title),
+							),
+							h("p", { className: "sf-trendJudgment" }, trend.judgment),
+							h(
+								"div",
+								{ className: "sf-trendEvidence" },
+								(trend.evidence ?? []).map((entry, evidenceIndex) => h(
+									"div",
+									{ className: "sf-trendEvidenceRow", key: `${entry.text}-${evidenceIndex}` },
+									h("span", { className: "sf-trendDate" }, entry.date),
+									h("span", { className: "sf-trendText" }, entry.text),
+									h(ReportSourceLink, { source: entry.source, t }),
+								)),
+							),
+							h(
+								"div",
+								{ className: "sf-trendNotes" },
+								trend.so_what ? h("p", null, h("b", null, `${t("reportSoWhat")}：`), trend.so_what) : null,
+								trend.boundary ? h("p", null, h("b", null, `${t("reportBoundary")}：`), trend.boundary) : null,
+							),
+						)),
+					),
+				),
+			);
+		}
+
 		function SignalForgePage(props) {
 			const t = useT(props);
 			const [today, setToday] = useState("");
@@ -1213,6 +1581,24 @@ window.__ModuleLoader__.load({
 				}
 			}
 
+			async function startReport() {
+				if (!date) return;
+				if (job?.status === "running") return;
+				setError(null);
+				setNotice(null);
+				try {
+					const result = await request("/jobs", {
+						method: "POST",
+						body: JSON.stringify({ date, mode: "report" }),
+					});
+					if (!result.ok || !result.data?.job) throw new Error(errorText(result));
+					setJob(result.data.job);
+					await pollJob(result.data.job.id);
+				} catch (reportError) {
+					setError(reportError instanceof Error ? reportError.message : String(reportError));
+				}
+			}
+
 			async function startEnrich() {
 				if (!date) return;
 				if (job?.status === "running") return;
@@ -1234,6 +1620,8 @@ window.__ModuleLoader__.load({
 			const enriching = running && job?.mode === "enrich";
 			const isToday = Boolean(today) && date === today;
 			const signals = Array.isArray(digest?.signals) ? digest.signals : [];
+			const report = digest?.report ?? null;
+			const reportRows = reportRowCount(report);
 			const business = Array.isArray(digest?.opportunities?.business) ? digest.opportunities.business : [];
 			const rdev = Array.isArray(digest?.opportunities?.rdev) ? digest.opportunities.rdev : [];
 			const opportunityCount = business.length + rdev.length;
@@ -1269,17 +1657,21 @@ window.__ModuleLoader__.load({
 			const dateOptionLabel = (value) => {
 				const meta = dateMeta.get(value);
 				const count = meta
-					? ` · ${meta.signals ?? 0} 条`
+					? ` · ${meta.report || meta.signals || 0} 条`
 					: "";
 				return value === today
 					? `${t("todayLabel")} · ${value}${meta ? count : " · 待生成"}`
 					: `${value}${count}`;
 			};
 
-			const statsLine = t("statsLine")
-				.replace("{signals}", String(signals.length))
-				.replace("{candidates}", String(stats.candidates ?? 0))
-				.replace("{sources}", String(okSources || stats.okSources || 0));
+			const statsLine = tab === "signals" && report
+				? t("reportStatsLine")
+					.replace("{rows}", String(reportRowCount(report)))
+					.replace("{sources}", String(okSources || stats.okSources || stats.sourceTotal || 0))
+				: t("statsLine")
+					.replace("{signals}", String(signals.length))
+					.replace("{candidates}", String(stats.candidates ?? 0))
+					.replace("{sources}", String(okSources || stats.okSources || 0));
 
 			return h(
 				"div",
@@ -1297,7 +1689,7 @@ window.__ModuleLoader__.load({
 							h(
 								"div",
 								null,
-								h("div", { className: "sf-eyebrow" }, "SIGNALFORGE · DAILY AI INTELLIGENCE"),
+								h("div", { className: "sf-eyebrow" }, "SIGNALFORGE · AI FUNDING INTELLIGENCE"),
 								h(
 									"div",
 									{ className: "sf-titleRow" },
@@ -1314,7 +1706,8 @@ window.__ModuleLoader__.load({
 									{
 										type: "button",
 										className: "sf-btn sf-weeklyBtn",
-										onClick: handleWeekly,
+										onClick: startReport,
+										disabled: running,
 										title: t("weeklyHint"),
 									},
 									h(IconReport, { size: 14 }),
@@ -1394,7 +1787,7 @@ window.__ModuleLoader__.load({
 										onClick: () => setTab("signals"),
 									},
 									t("tabSignals"),
-									h("span", { className: "sf-tabNum" }, signals.length),
+									h("span", { className: "sf-tabNum" }, reportRows),
 								),
 								h(
 									"button",
@@ -1512,30 +1905,13 @@ window.__ModuleLoader__.load({
 							onStart: startFetch,
 							disabled: !isToday || running,
 						}),
-						!loading && digest && tab === "signals" && h(
-							"section",
-							{ "aria-label": t("tabSignals") },
-							signals.length === 0
-								? h(
-									"div",
-									{ className: "sf-empty" },
-									h("div", { className: "sf-emptyIcon" }, h(IconRadar, { size: 54 })),
-									h("div", { className: "sf-emptyTitle" }, t("noSignals")),
-									h("p", { className: "sf-emptyHint" }, isToday ? t("noSignalsHint") : t("noSignalsPastHint")),
-								)
-								: h(
-									"div",
-									{ className: "sf-list" },
-									signals.map((item, index) => h(SignalCard, {
-										key: item.id || `${item.title}-${index}`,
-										item,
-										index,
-										t,
-										onChat: handleChat,
-										onPaper: handleReadPaper,
-									})),
-								),
-						),
+						!loading && digest && tab === "signals" && h(ReportView, {
+							report,
+							t,
+							onGenerate: startReport,
+							onDeepDive: handleWeekly,
+							running,
+						}),
 						!loading && digest && tab === "opportunities" && h(
 							"section",
 							{ "aria-label": t("tabOpps") },

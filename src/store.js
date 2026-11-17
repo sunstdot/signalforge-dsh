@@ -78,6 +78,14 @@ export class DigestStore {
 	}
 }
 
+function reportCount(report) {
+	if (!report || typeof report !== "object") return 0;
+	return (Array.isArray(report.funding) ? report.funding.length : 0)
+		+ (Array.isArray(report.models) ? report.models.length : 0)
+		+ (Array.isArray(report.products) ? report.products.length : 0)
+		+ (Array.isArray(report.trends) ? report.trends.length : 0);
+}
+
 export function summaryOf(digest) {
 	return {
 		date: digest.date,
@@ -86,7 +94,8 @@ export function summaryOf(digest) {
 		signals: Array.isArray(digest.signals) ? digest.signals.length : 0,
 		business: Array.isArray(digest.opportunities?.business) ? digest.opportunities.business.length : 0,
 		rdev: Array.isArray(digest.opportunities?.rdev) ? digest.opportunities.rdev.length : 0,
-		model: digest.analysis?.model ?? null,
+		report: reportCount(digest.report),
+		model: digest.analysis?.model ?? digest.analysis?.reportModel ?? null,
 		warning: digest.analysis?.warning ?? null,
 	};
 }

@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.2.0 — 2026-11-17
+
+- **Replaced the first tab's content** with a 7-day AI funding intelligence report: funding, new models, new products, and 3–5 trend signals.
+- Every report row requires a source URL from the fetched candidates; funding keeps amount and valuation separate and marks confirmed / rumored / in-talks.
+- Added report generation (`mode: "report"`), report storage on the daily digest, report-aware bootstrap/date labels, and a `ReportView` with source-linked tables.
+- Added TechCrunch Funding / Fundraising, Product Hunt AI, and The Verge AI; 32 sources total.
+- Added 投融资 / 产品 categories to the all-intel view.
+- Kept `ai-weekly-report` as the “deep dive in chat” action and preserved the daily full run for opportunities/all-intel.
+- Added report normalization tests.
+
 ## 0.1.5 — 2026-11-17
 
 - Added **AI 周报**: a header action plus a registered `ai-weekly-report` skill. It opens a new conversation that uses web search for the last 7 days and returns funding, model, product, and trend tables with sources.

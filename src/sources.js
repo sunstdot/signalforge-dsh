@@ -36,6 +36,10 @@ export const FEEDS = [
 	{ key: "oneusefulthing", name: "One Useful Thing", url: "https://www.oneusefulthing.org/feed", source_type: "newsletter", official: false, max: 4 },
 	{ key: "importai", name: "Import AI", url: "https://importai.substack.com/feed", source_type: "newsletter", official: false, max: 4 },
 	{ key: "interconnects", name: "Interconnects", url: "https://www.interconnects.ai/feed", source_type: "newsletter", official: false, max: 4 },
+	{ key: "techcrunchfunding", name: "TechCrunch Funding", url: "https://techcrunch.com/tag/funding/feed/", source_type: "funding", official: false, max: 8, lookbackHours: 168 },
+	{ key: "techcrunchfundraising", name: "TechCrunch Fundraising", url: "https://techcrunch.com/tag/fundraising/feed/", source_type: "funding", official: false, max: 8, lookbackHours: 168 },
+	{ key: "producthunt", name: "Product Hunt AI", url: "https://www.producthunt.com/feed?category=artificial-intelligence", source_type: "product", official: false, max: 8, lookbackHours: 168 },
+	{ key: "thevergeai", name: "The Verge AI", url: "https://www.theverge.com/rss/ai-artificial-intelligence/index.xml", source_type: "news", official: false, max: 6, lookbackHours: 168 },
 ];
 
 /**
