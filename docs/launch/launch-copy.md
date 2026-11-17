@@ -85,7 +85,7 @@ github.com/sunstdot/signalforge-dsh
 日期 / 模型 / 方向 / 核心变化，不写「更强了」这种空话。
 
 🚀 **值得关注的新产品表**
-Product Hunt 今日热榜，8 个 AI 新产品，每个都有中文速读。
+Product Hunt 热榜，8 个 AI 新产品，每个都有中文速读。
 
 📈 **3–5 个趋势信号**
 不是复述新闻，而是：判断 + 本周证据 + so what + 反证/边界。
