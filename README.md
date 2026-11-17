@@ -5,7 +5,7 @@
 这是一个社区插件，不是 DeepSeek 官方项目。适配 DeepSeek Harness `0.2.1-rc.5` / `0.2.x`，无需额外 API Key。
 
 <p align="center">
-  <img src="docs/screenshots/signals.webp" alt="AI 投融资情报：7 天报告" width="860">
+  <img src="docs/screenshots/report.png" alt="AI 投融资情报：7 天报告" width="860">
 </p>
 
 ## 它能做什么
@@ -25,19 +25,23 @@
 
 第一栏是 7 天投融资报告：三张表 + 趋势信号；已确认、传闻、洽谈中分别标记，金额和估值分列，来源可点击。
 
-![AI 投融资情报](docs/screenshots/signals.webp)
+![AI 投融资情报：7 天报告](docs/screenshots/report.png)
 
 ### 全部情报
 
-当天抓到的全部候选都在这里，未入选的也在里面；每张卡片右上角是分类标签，正文是中文「发现了什么 / 为什么值得看」。
+当天抓到的全部候选都在这里，未入选的也在里面；每张卡片右上角是分类标签，正文是中文「发现了什么 / 为什么值得看」。现在还有 **AI新产品** 分类，直接看 Product Hunt 的 AI 热榜。
 
-![全部情报：全部候选与分类标签](docs/screenshots/all-intel.webp)
+![全部情报：AI新产品分类](docs/screenshots/products.png)
 
 ### 分类筛选
 
-按当天实际出现的分类筛选，例如论文、仓库、资讯、AI公司博客；没有对应内容的分类不会出现。
+按当天实际出现的分类筛选，例如论文、仓库、资讯、AI公司博客、AI新产品；没有对应内容的分类不会出现。
 
-![分类筛选](docs/screenshots/categories.jpg)
+![AI新产品分类](docs/screenshots/products.png)
+
+## 发布素材
+
+X / 小红书文案和配图在 [`docs/launch/`](docs/launch/)，包括报告、AI新产品、封面和竖版图。
 
 ## 安装
 
@@ -55,7 +59,7 @@ dsh plugin --profile desktop add "github:sunstdot/signalforge-dsh"
 
 ```bash
 shasum -a 256 -c SHA256SUMS
-dsh plugin --profile desktop add "$PWD/dsh-signalforge-0.2.1.tgz"
+dsh plugin --profile desktop add "$PWD/dsh-signalforge-0.2.2.tgz"
 ```
 
 Linux 用 `sha256sum -c SHA256SUMS`。这种分发方式不依赖 npm，也不会在安装时执行构建。

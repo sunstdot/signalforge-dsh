@@ -52,6 +52,7 @@ window.__ModuleLoader__.load({
 			reportWhy: "为什么值得关注",
 			reportStatus: "状态",
 			reportSource: "来源",
+			reportSourceLink: "原文 ↗",
 			reportModel: "模型",
 			reportDirection: "方向",
 			reportChange: "核心变化",
@@ -197,6 +198,7 @@ window.__ModuleLoader__.load({
 			reportWhy: "Why it matters",
 			reportStatus: "Status",
 			reportSource: "Source",
+			reportSourceLink: "Source ↗",
 			reportModel: "Model",
 			reportDirection: "Direction",
 			reportChange: "What changed",
@@ -570,6 +572,8 @@ window.__ModuleLoader__.load({
 			".sf-reportCount{font-size:11px;color:var(--dsw-alias-label-tertiary);white-space:nowrap}",
 			".sf-tableWrap{overflow-x:auto;border:.5px solid var(--dsw-alias-border-l2);border-radius:10px;background:var(--dsw-alias-bg-layer-1)}",
 			".sf-table{width:100%;border-collapse:collapse;min-width:780px;font-size:13px;line-height:20px}",
+			".sf-tableFunding{table-layout:fixed;min-width:820px}",
+			".sf-tableFunding td:nth-child(3),.sf-tableFunding td:nth-child(4),.sf-tableFunding td:nth-child(8){white-space:nowrap;font-size:12.5px}",
 			".sf-table th{text-align:left;font-size:11.5px;font-weight:550;color:var(--dsw-alias-label-tertiary);background:color-mix(in srgb,var(--dsw-alias-label-primary) 3%,transparent);padding:9px 12px;border-bottom:.5px solid var(--dsw-alias-border-l2);white-space:nowrap}",
 			".sf-table td{padding:11px 12px;border-bottom:.5px solid var(--dsw-alias-border-l1);vertical-align:top;color:var(--dsw-alias-label-secondary)}",
 			".sf-table tbody tr:last-child td{border-bottom:none}",
@@ -1136,8 +1140,7 @@ window.__ModuleLoader__.load({
 					rel: "noreferrer",
 					title: source.title || source.url,
 				},
-				source.source || t("reportSource"),
-				" ↗",
+				t("reportSourceLink"),
 			);
 		}
 
@@ -1221,7 +1224,19 @@ window.__ModuleLoader__.load({
 						{ className: "sf-tableWrap" },
 						h(
 							"table",
-							{ className: "sf-table" },
+							{ className: "sf-table sf-tableFunding" },
+							h(
+								"colgroup",
+								null,
+								h("col", { style: { width: "9%" } }),
+								h("col", { style: { width: "13%" } }),
+								h("col", { style: { width: "11%" } }),
+								h("col", { style: { width: "10%" } }),
+								h("col", { style: { width: "12%" } }),
+								h("col", { style: { width: "25%" } }),
+								h("col", { style: { width: "8%" } }),
+								h("col", { style: { width: "12%" } }),
+							),
 							h(
 								"thead",
 								null,

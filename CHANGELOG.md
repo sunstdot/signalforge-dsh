@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.2 — 2026-11-17
+
+- Added launch materials: X / Xiaohongshu copy, 1600×900 X images, and 1242×1656 vertical images in `docs/launch/`.
+- Updated README screenshots to the funding report and AI新产品 all-intel view.
+- Improved the funding table column layout and shortened source links to “原文 ↗” so amounts/valuations no longer wrap character-by-character.
+
 ## 0.2.1 — 2026-11-17
 
 - Added an **AI新产品** category to 全部情报, backed by Product Hunt AI's daily feed.
