@@ -19,6 +19,7 @@ import path from "node:path";
 import { registerApi } from "./src/http.js";
 import { createPipeline } from "./src/pipeline.js";
 import { PAPER_SKILL_CONTENT, PAPER_SKILL_DESCRIPTION, PAPER_SKILL_NAME, PAPER_SKILL_WHEN } from "./src/paper-skill.js";
+import { WEEKLY_SKILL_CONTENT, WEEKLY_SKILL_DESCRIPTION, WEEKLY_SKILL_NAME, WEEKLY_SKILL_WHEN } from "./src/weekly-skill.js";
 import { DigestStore } from "./src/store.js";
 
 export const name = "signalforge";
@@ -67,6 +68,16 @@ export function apply(ctx, config = {}) {
 				content: PAPER_SKILL_CONTENT,
 			}),
 			"signalforge: paper reading skill",
+		);
+		skillCtx.effect(
+			() => skillCtx.skills.register({
+				name: WEEKLY_SKILL_NAME,
+				description: WEEKLY_SKILL_DESCRIPTION,
+				whenToUse: WEEKLY_SKILL_WHEN,
+				source: "signalforge",
+				content: WEEKLY_SKILL_CONTENT,
+			}),
+			"signalforge: AI weekly report skill",
 		);
 	});
 

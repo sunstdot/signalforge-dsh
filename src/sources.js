@@ -576,7 +576,7 @@ export async function collectCandidates({ lookbackHours = 48, timeoutMs = 16000,
 	const total = tasks.length;
 	onProgress?.({ stage: "sources", done, total, source: "开始抓取" });
 
-	const results = await Promise.all(tasks.map(async (task) => {
+	const results = await mapLimit(tasks, 6, async (task) => {
 		const begin = Date.now();
 		try {
 			const items = await task.run();
@@ -598,7 +598,7 @@ export async function collectCandidates({ lookbackHours = 48, timeoutMs = 16000,
 			done += 1;
 			onProgress?.({ stage: "sources", done, total, source: task.name });
 		}
-	}));
+	});
 
 	const flattened = results.flat();
 	const unique = dedupe(flattened);

@@ -68,6 +68,8 @@ window.__ModuleLoader__.load({
 			paperPlaceholder: "粘贴 arXiv / DOI / PDF 链接，或标题 + 摘要…",
 			paperStart: "开始精读",
 			paperStarting: "准备中…",
+			weeklyReport: "AI 周报",
+			weeklyHint: "用当前账号联网调研过去 7 天的投融资、新模型、新产品和趋势",
 			chatCopied: "文章信息已复制，去对话里粘贴即可继续。",
 			chatUnavailable: "当前 Harness 组合没有可用的对话服务，无法打开新对话。",
 			showDetails: "展开细节",
@@ -175,6 +177,8 @@ window.__ModuleLoader__.load({
 			paperPlaceholder: "Paste an arXiv / DOI / PDF link, or a title + abstract…",
 			paperStart: "Start reading",
 			paperStarting: "Preparing…",
+			weeklyReport: "AI weekly",
+			weeklyHint: "Research the last 7 days of AI funding, model releases, products, and trends with the current account",
 			chatCopied: "Article details copied — paste them into a conversation to continue.",
 			chatUnavailable: "This Harness composition has no conversation service to open a new chat.",
 			showDetails: "Show details",
@@ -408,6 +412,18 @@ window.__ModuleLoader__.load({
 			);
 		}
 
+		function IconReport({ size }) {
+			const s = size || 14;
+			return h(
+				"svg",
+				iconProps(s),
+				h("path", { d: "M3.5 2.5h9v11h-9z" }),
+				h("path", { d: "M5.6 5.4h4.8" }),
+				h("path", { d: "M5.6 8h3.2" }),
+				h("path", { d: "M5.6 10.6h3.8" }),
+			);
+		}
+
 		function IconPaper({ size }) {
 			const s = size || 14;
 			return h(
@@ -465,6 +481,7 @@ window.__ModuleLoader__.load({
 			".sf-scroll{flex:1 1 auto;min-height:0;overflow:auto;scrollbar-gutter:stable}",
 			".sf-inner{width:min(880px,100%);margin:0 auto;padding:34px 30px 88px;box-sizing:border-box}",
 			".sf-head{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;flex-wrap:wrap}",
+			".sf-headActions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}",
 			".sf-eyebrow{font-size:11px;line-height:16px;letter-spacing:.12em;color:var(--dsw-alias-label-tertiary);font-weight:600}",
 			".sf-titleRow{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:6px}",
 			".sf-title{margin:0;font-size:28px;line-height:36px;font-weight:640;letter-spacing:-.012em}",
@@ -1181,6 +1198,10 @@ window.__ModuleLoader__.load({
 				return runChatAction(() => props.openPaperChat?.(item));
 			}
 
+			function handleWeekly() {
+				return runChatAction(() => props.openWeeklyReport?.());
+			}
+
 			async function startManualPaper() {
 				const raw = paperInput.trim();
 				if (!raw || paperBusy) return;
@@ -1288,6 +1309,17 @@ window.__ModuleLoader__.load({
 							h(
 								"div",
 								{ className: "sf-headActions" },
+								h(
+									"button",
+									{
+										type: "button",
+										className: "sf-btn sf-weeklyBtn",
+										onClick: handleWeekly,
+										title: t("weeklyHint"),
+									},
+									h(IconReport, { size: 14 }),
+									t("weeklyReport"),
+								),
 								h(
 									"button",
 									{
@@ -1830,6 +1862,12 @@ window.__ModuleLoader__.load({
 			const openArticleChat = (item) => startChatWithPrompt(buildArticlePrompt(item));
 			const openPaperChat = (item) => startChatWithPrompt(buildPaperPrompt(item));
 			const openManualPaper = (raw) => startChatWithPrompt(buildManualPaperPrompt(raw));
+			const openWeeklyReport = () => startChatWithPrompt([
+				"请使用 ai-weekly-report 技能，生成过去 7 天（今天往前 7 天）的全球 AI 周报。",
+				"必须使用 web_search / web_fetch 实际检索；优先公司/机构官方公告、Reuters、TechCrunch、主流科技媒体、Product Hunt、GitHub、Hugging Face。",
+				"按技能输出：1）重点投融资表；2）重要新模型表；3）值得关注的新产品表；4）3–5 个趋势信号。",
+				"区分已确认 / 传闻 / 洽谈中；不要把估值当融资金额；每条给来源链接；不要凑数。",
+			].join("\n"));
 
 			ctx.slots.inject("sidebar.panellist", () =>
 				ctx.slots.register(
@@ -1850,7 +1888,7 @@ window.__ModuleLoader__.load({
 						name: "main",
 						key: "signalforge",
 						locale: NS,
-						inject: () => ({ openArticleChat, openPaperChat, openManualPaper }),
+						inject: () => ({ openArticleChat, openPaperChat, openManualPaper, openWeeklyReport }),
 					},
 					SignalForgePage,
 				),
@@ -1864,7 +1902,7 @@ window.__ModuleLoader__.load({
 						order: 24,
 						label: () => t("panel"),
 						locale: NS,
-						inject: () => ({ openArticleChat, openPaperChat, openManualPaper }),
+						inject: () => ({ openArticleChat, openPaperChat, openManualPaper, openWeeklyReport }),
 					},
 					SignalForgePage,
 				),

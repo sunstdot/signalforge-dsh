@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.5 — 2026-11-17
+
+- Added **AI 周报**: a header action plus a registered `ai-weekly-report` skill. It opens a new conversation that uses web search for the last 7 days and returns funding, model, product, and trend tables with sources.
+- Enforced signal source diversity: at most 2 cards from one source, and 5 signals must cover at least 3 sources.
+- Added source-fetch concurrency limiting and transient retry; a full 28-source run now completes 28/28 reliably.
+- The weekly skill distinguishes confirmed / rumored / in-talks events and keeps valuation separate from funding amount.
+
 ## 0.1.4 — 2026-11-08
 
 - Fixed `paper-reading` skill loading: runtime skills now declare the required `source` string.

@@ -177,7 +177,8 @@ ${candidateBlock(candidates)}
 - tags 只能从这五类里选 0–2 个：${ALLOWED_TAGS.join("、")}。
 - finding 和 why_read 必须是单行、具体、可核对；不要用「值得关注」「具有重要意义」这类空话。
 - details 给 2–4 条，每条都必须在材料里有依据；材料不够就少给，不要补写。
-- 同一事件只保留一条。`;
+- 同一事件只保留一条。
+- 来源多样性：5 条至少覆盖 3 个不同来源；同一来源最多 2 条，不要因为某站文章多就连选 3 条。`;
 }
 
 function normalizeSignal(entry, candidate, index) {

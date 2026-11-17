@@ -74,4 +74,10 @@ const doiResult = await manualAction("10.1234/example.doi");
 console.log({ doiOk: doiResult.ok, hasDoi: started?.options.prompt.includes("https://doi.org/10.1234/example.doi") });
 if (!doiResult.ok || !started?.options.prompt.includes("https://doi.org/10.1234/example.doi")) process.exit(1);
 
-console.log("chat + paper actions ok");
+const weeklyAction = main.options.inject().openWeeklyReport;
+started = null;
+const weeklyResult = await weeklyAction();
+console.log({ weeklyOk: weeklyResult.ok, hasWeeklySkill: started?.options.prompt.includes("ai-weekly-report"), hasWebSearch: started?.options.prompt.includes("web_search"), hasFunding: started?.options.prompt.includes("投融资") });
+if (!weeklyResult.ok || !started?.options.prompt.includes("ai-weekly-report") || !started?.options.prompt.includes("web_search")) process.exit(1);
+
+console.log("chat + paper + weekly actions ok");
