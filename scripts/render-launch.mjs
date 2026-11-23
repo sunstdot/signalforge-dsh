@@ -8,7 +8,8 @@ const require = createRequire(import.meta.url);
 const React = require('react');
 const { renderToStaticMarkup } = require('react-dom/server');
 const dataDir = path.join(os.homedir(), '.dsh', 'signalforge');
-const date = '2026-11-17';
+const date = process.env.SF_RENDER_DATE || '2026-11-17';
+const outDir = process.env.SF_RENDER_OUT || 'docs/launch';
 const digest = JSON.parse(readFileSync(path.join(dataDir, 'digests', `${date}.json`), 'utf8'));
 const index = JSON.parse(readFileSync(path.join(dataDir, 'index.json'), 'utf8'));
 
@@ -79,7 +80,7 @@ async function shot(html, file, width, height) {
 	await page.screenshot({ path: file, fullPage: false });
 	await page.close();
 }
-await shot(render('signals'), 'docs/launch/report-raw.png', 1600, 1100);
-await shot(render('all', 'AI新产品'), 'docs/launch/products-raw.png', 1600, 1100);
+await shot(render('signals'), `${outDir}/report-raw.png`, 1600, 1100);
+await shot(render('all', 'AI新产品'), `${outDir}/products-raw.png`, 1600, 1100);
 await browser.close();
 console.log('rendered raw launch screenshots');

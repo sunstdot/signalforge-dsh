@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.4 — 2026-11-23
+
+- Fixed the funding table overlap caused by long IPO/amount text in fixed-width columns.
+- Date/company/source columns now keep their spacing; long amounts and valuations wrap inside their own cells instead of spilling into adjacent columns.
+- Kept a minimum table width for narrow screens, where the table wrapper scrolls horizontally.
+
 ## 0.2.3 — 2026-11-17
 
 - Fixed broken README images: `package.json` now includes `docs/screenshots/*.png`.

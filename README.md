@@ -110,7 +110,7 @@ dsh plugin --profile desktop add "github:sunstdot/signalforge-dsh"
 
 ```bash
 shasum -a 256 -c SHA256SUMS
-dsh plugin --profile desktop add "$PWD/dsh-signalforge-0.2.3.tgz"
+dsh plugin --profile desktop add "$PWD/dsh-signalforge-0.2.4.tgz"
 ```
 
 Linux 用 `sha256sum -c SHA256SUMS`。这种分发方式不依赖 npm，也不会在安装时执行构建。
